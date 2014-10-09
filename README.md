@@ -37,6 +37,7 @@ There are currently NO security features. This is something required, inevitably
 
 ## Contributing
 We'd love everyone and anyone to contribute!
+
 1. Check the issue list for outstanding tasks or create new ones.
 2. Send a pull request with completed code and unit/integration tests.
 3. Need help? or support getting your change through? Start a discussion in the issue and if needs be, we can take it offline from there.
