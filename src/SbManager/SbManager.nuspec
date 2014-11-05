@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>SbManager</id>
+        <version>1.0.0.0</version>
+        <title>SbManager</title>
+        <authors>GlobalX DevX, Luke Schafer</authors>
+        <owners>GlobalX DevX</owners>
+        <projectUrl>http://it.wiki.gxs.com.au/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Service Bus Manager</description>
+    </metadata>
+</package>

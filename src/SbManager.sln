@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{49B3A997-C8AB-4B27-AE3A-2063BDA29337}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+		.nuget\Octo.exe = .nuget\Octo.exe
+		.nuget\Octo.exe.config = .nuget\Octo.exe.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".git", ".git", "{8A5003CA-06F2-4082-8CB6-31FECBFC3CCC}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0F6E5E33-D075-4E58-8E0E-D2399779A67A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SbManager.Tests", "SbManager.Tests\SbManager.Tests.csproj", "{4A7EB6CC-5996-46AB-872E-E000E78924B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SbManager.IntegrationTests", "SbManager.IntegrationTests\SbManager.IntegrationTests.csproj", "{3EE2A8CD-4EEA-42B1-B1C2-1520D3FAC542}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SbManager", "SbManager\SbManager.csproj", "{C3357D9E-5195-401F-8322-213D3A8CB749}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A7EB6CC-5996-46AB-872E-E000E78924B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A7EB6CC-5996-46AB-872E-E000E78924B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A7EB6CC-5996-46AB-872E-E000E78924B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A7EB6CC-5996-46AB-872E-E000E78924B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EE2A8CD-4EEA-42B1-B1C2-1520D3FAC542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EE2A8CD-4EEA-42B1-B1C2-1520D3FAC542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EE2A8CD-4EEA-42B1-B1C2-1520D3FAC542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EE2A8CD-4EEA-42B1-B1C2-1520D3FAC542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3357D9E-5195-401F-8322-213D3A8CB749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3357D9E-5195-401F-8322-213D3A8CB749}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3357D9E-5195-401F-8322-213D3A8CB749}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3357D9E-5195-401F-8322-213D3A8CB749}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4A7EB6CC-5996-46AB-872E-E000E78924B2} = {0F6E5E33-D075-4E58-8E0E-D2399779A67A}
+		{3EE2A8CD-4EEA-42B1-B1C2-1520D3FAC542} = {0F6E5E33-D075-4E58-8E0E-D2399779A67A}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" ng-app="manager">
+<head>
+    <meta charset="utf-8" />
+    <title>Bus Manager</title>
+    <link rel="stylesheet" href="/Content/bootstrap.superhero.min.css" />
+    <link rel="stylesheet" href="/Content/site.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.18/angular-route.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="/Scripts/jquery-2.1.0.min.js"></script>
+    <script src="/Scripts/manager/manager.js"></script>
+    <script src="/Scripts/manager/directives.js"></script>
+    <script src="/Scripts/manager/homeController.js"></script>
+    <script src="/Scripts/manager/queueController.js"></script>
+    <script src="/Scripts/manager/topicController.js"></script>
+    <script src="/Scripts/manager/subscriptionController.js"></script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <nav class="container">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#/"><i class="glyphicon glyphicon-road"></i> SbManager</a></li>
+                <li><a href="#/">Home</a></li>
+                <li><a href="#/help">Help</a></li>
+            </ul>
+        </nav>
+    </div>
+    @Section['Content'];
+</body>
+</html>

@@ -1,0 +1,26 @@
+﻿<div class="container">
+    <ul class="breadcrumb">
+        <li><a href="#">Overview</a></li>
+        <li class="active">{{name}}</li>
+    </ul>
+    
+    <h2 ng-if="!model">&nbsp;</h2>
+    <loading ng-if="!model"></loading>
+
+    <div ng-if="model">
+        <h2><i class="glyphicon glyphicon-th-list"></i> {{model.Name}}</h2>
+
+        <messagingentity></messagingentity>
+        <peek ng-if="model.ActiveMessageCount" model="model"></peek>
+        <peek ng-if="model.DeadLetterCount" model="model" dead></peek>
+    </div>
+</div>
+
+<div class="navbar navbar-fixed-bottom navbar-default bottom-bar" role="navigation">
+    <nav class="container">
+        <ul class="nav navbar-nav" ng-if="model">
+            <li><button class="btn btn-success" ng-click="refresh()"><i class="glyphicon glyphicon-refresh btn-sm"></i> Refresh</button></li>
+            <li><button class="btn btn-danger" ng-click="delete()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete Queue</button></li>
+        </ul>
+    </nav>
+</div>

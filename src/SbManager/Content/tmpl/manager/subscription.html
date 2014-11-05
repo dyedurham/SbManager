@@ -1,0 +1,40 @@
+﻿<div class="container">
+    <ul class="breadcrumb">
+        <li><a href="#">Overview</a></li>
+        <li><a href="#/topic/{{topic}}">{{topic}}</a></li>
+        <li class="active">{{name}}</li>
+    </ul>
+
+    <h2 ng-if="!model">&nbsp;</h2>
+    <loading ng-if="!model"></loading>
+
+    <div ng-if="model">
+        <h2><i class="glyphicon glyphicon-inbox"></i> {{model.Name}}</h2>
+        <h5><i class="glyphicon glyphicon-th"></i> {{model.TopicName}}</h5>
+
+        <messagingentity></messagingentity>
+        <peek ng-if="model.ActiveMessageCount" model="model"></peek>
+        <peek ng-if="model.DeadLetterCount" model="model" dead></peek>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Filter Rules</h3>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="rule in model.Rules">
+                    <strong>{{rule.Name}} ({{rule.FilterType}})</strong> @ {{rule.CreatedAt | date:'yyyy-MM-dd HH:mm:ss'}}<br />
+                    <pre>{{rule.Text}}</pre>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="navbar navbar-fixed-bottom navbar-default bottom-bar" role="navigation">
+    <nav class="container">
+        <ul class="nav navbar-nav" ng-if="model">
+            <li><button class="btn btn-success" ng-click="refresh()"><i class="glyphicon glyphicon-refresh btn-sm"></i> Refresh</button></li>
+            <li><button class="btn btn-danger" ng-click="delete()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete Subscription</button></li>
+        </ul>
+    </nav>
+</div>

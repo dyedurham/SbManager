@@ -1,0 +1,65 @@
+﻿<div class="row">
+    <div ng-class="{'col-lg-12' : messages.length == 0, 'col-lg-6' : messages.length != 0 }">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Peek {{type}}</h3>
+            </div>
+            <div class="panel-footer">
+                <strong>Top: </strong>
+                <input ng-model="peekCount" class="form-control peek-btn" type="number" />
+                <button ng-click="peek(peekCount)" type="button" class="btn btn-info">Peek</button>
+            </div>
+            <div class="panel-body peek-list" ng-if="messages.length">
+                <table class="table">
+                    <thead>
+                        <tr>    
+                            <th>Message Id</th>
+                            <th>Seq</th>
+                            <th>Enq.Seq</th>
+                            <th>Size(B)</th>
+                            <th>Enq.UTC</th>
+                            <th>ExpireUTC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="m in messages" ng-class="{info: viewing && m.MessageId == viewing.MessageId}">
+                            <td><a href="" ng-click="$parent.view(m)">{{m.MessageId}}</a></td>
+                            <td>{{m.Sequence}}</td>
+                            <td>{{m.EnqueuedSequence}}</td>
+                            <td>{{m.SizeInBytes}}</td>
+                            <td>{{m.Enqueued | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                            <td>{{m.Expires | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-body" ng-if="searched && messages.length == 0">
+                Nothing found
+            </div>
+            <div class="panel-body" ng-if="!messageCount">
+                Nothing to peek
+            </div>
+            <div class="panel-body" ng-if="peeking">
+                <loading></loading>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6" ng-if="messages.length != 0">
+        <messagedetails></messagedetails>
+    </div>
+</div>
+
+<div class="modal fade" id="peekBreakout" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">{{breakoutLabel}}</h4>
+            </div>
+            <div class="modal-body">
+                <textarea>{{breakoutText}}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
