@@ -16,6 +16,11 @@ While there is already a pretty good tool for doing the things SbManager does, S
 
 Additionally, SBWS has pretty poor monitoring capabilities, so SbManager allows us to expose REST endpoints for monitoring from tools such as PRTG
 
+## Screenshots
+(Ignore the temporary logo. In related news: got a good logo?)
+![SbManager Overview](http://i.imgur.com/34iafSQ.png)
+![SbManager Subscription](http://i.imgur.com/KumMAO9.png)
+
 ## Installing/Running
 
 //todo
