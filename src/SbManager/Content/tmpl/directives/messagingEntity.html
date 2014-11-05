@@ -1,0 +1,153 @@
+﻿<div class="row dashboard-panels">
+    <div class="col-md-2">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Active Messages</h3>
+            </div>
+            <div class="panel-body">
+                <h2>
+                    <i class="glyphicon glyphicon-align-justify"></i>
+                    {{model.ActiveMessageCount}}
+                </h2>
+            </div>
+            <div ng-if="model.ActiveMessageCount > 0 && !model.Subscriptions" class="panel-footer">
+                <button ng-if="removeall" ng-click="removeall(false)" type="button" class="btn btn-danger">Remove all</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">Dead Letters</h3>
+            </div>
+            <div class="panel-body">
+                <h2>
+                    <i class="glyphicon glyphicon-trash"></i>
+                    {{model.DeadLetterCount}}
+                </h2>
+            </div>
+            <div ng-if="model.DeadLetterCount > 0 && !model.Subscriptions" class="panel-footer">
+                <button ng-if="removeall" ng-click="removeall(true)" type="button" class="btn btn-danger">Remove all</button>
+                <button ng-if="requeue" ng-click="requeue()" type="button" class="btn btn-warning">Requeue all</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Scheduled Count</h3>
+            </div>
+            <div class="panel-body">
+                <h2>
+                    <i class="glyphicon glyphicon-time"></i>
+                    {{model.ScheduledMessageCount}}
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title">Transfer Count</h3>
+            </div>
+            <div class="panel-body">
+                <h2>
+                    <i class="glyphicon glyphicon-arrow-right"></i>
+                    {{model.TransferMessageCount}}
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">T'fer Dead Letter</h3>
+            </div>
+            <div class="panel-body">
+                <h2>
+                    <i class="glyphicon glyphicon-random"></i>&nbsp;
+                    {{model.DeadTransferMessageCount}}
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div ng-if="model.SizeInBytes || model.SizeInBytes === 0" class="col-md-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Size</h3>
+            </div>
+            <div class="panel-body">
+                <h2>
+                    <i class="glyphicon glyphicon-hdd"></i>
+                    {{model.SizeInHumanReadable}}
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div ng-if="model.NumberOfRules || model.NumberOfRules === 0" class="col-md-2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"># of Rules</h3>
+            </div>
+            <div class="panel-body">
+                <h2>
+                    <i class="glyphicon glyphicon-list-alt"></i>
+                    {{model.NumberOfRules}}
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <ul class="list-group">
+            <li class="list-group-item active">
+                Configuration
+            </li>
+            <li class="list-group-item" ng-if="model.AutoDeleteOnIdle">
+                <span class="badge">{{model.AutoDeleteOnIdle.Human}}</span>
+                Auto Delete on Idle
+            </li>
+            <li class="list-group-item" ng-if="model.DefaultMessageTTL">
+                <span class="badge">{{model.DefaultMessageTTL.Human}}</span>
+                Default Message Time-to-live
+            </li>
+            <li class="list-group-item" ng-if="model.DuplicateDetectionWindow">
+                <span class="badge">{{model.DuplicateDetectionWindow.Human}}</span>
+                Duplicate Message Detection Window
+            </li>
+            <li class="list-group-item" ng-if="model.LockDuration">
+                <span class="badge">{{model.LockDuration.Human}}</span>
+                Lock Duration (Peek Lock)
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <ul class="list-group">
+            <li class="list-group-item active">
+                Status Information
+            </li>
+            <li class="list-group-item">
+                <span class="badge">{{model.Status}}</span>
+                Status
+            </li>
+            <li class="list-group-item">
+                <span class="badge">{{model.IsReadOnly}}</span>
+                Is Read Only
+            </li>
+            <li class="list-group-item">
+                <span class="badge">{{model.CreatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
+                Created At
+            </li>
+            <li class="list-group-item">
+                <span class="badge">{{model.AccessedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
+                Accessed At
+            </li>
+            <li class="list-group-item">
+                <span class="badge">{{model.UpdatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
+                Updated At
+            </li>
+        </ul>
+    </div>
+</div>

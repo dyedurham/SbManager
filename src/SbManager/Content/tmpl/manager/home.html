@@ -1,0 +1,35 @@
+﻿<div class="container">
+    <ul class="breadcrumb">
+        <li class="active">Overview</li>
+    </ul>
+
+    <h1 id="type"><i class="glyphicon glyphicon-road"></i> SbManager</h1>
+
+    <loading ng-if="!model"></loading>
+
+    <div ng-if="model">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Queues</h2>
+                <ul class="entitylist">
+                    <li ng-repeat="m in model.Queues"><i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" /></li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h2>Topics</h2>
+                <ul class="entitylist">
+                    <li ng-repeat="m in model.Topics"><i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" /></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="navbar navbar-fixed-bottom navbar-default bottom-bar" role="navigation">
+    <nav class="container">
+        <ul class="nav navbar-nav" ng-if="model">
+            <li><button class="btn btn-success" ng-click="refresh()"><i class="glyphicon glyphicon-refresh btn-sm"></i> Refresh</button></li>
+            <li><button class="btn btn-danger" ng-click="deleteAll()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete all</button></li>
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,63 @@
+﻿<div class="panel panel-info" ng-if="!viewing">
+    <div class="panel-heading">
+        <h3 class="panel-title">Message Detailes</h3>
+    </div>
+    <div class="panel-body" ng-if="!viewing">
+        Choose a message from the table...
+    </div>
+</div>
+
+<div ng-if="viewing">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Message Properties</h3>
+        </div>
+        <ul class="list-group message-properties">
+            <li class="list-group-item" messageproperty model="viewing" title="ContentType" val="{{viewing.ContentType}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="CorrelationId" val="{{viewing.CorrelationId}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="DeliveryCount" val="{{viewing.DeliveryCount}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="EnqueuedSequenceNumber" val="{{viewing.EnqueuedSequence}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="EnqueuedUTC" val="{{viewing.Enqueued | date:'yyyy-MM-dd HH:mm:ss'}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="ExpiresUTC" val="{{viewing.Expires | date:'yyyy-MM-dd HH:mm:ss'}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="IsBodyConsumed" val="{{viewing.IsBodyConsumed}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="Label" val="{{viewing.Label}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="LockedUntilUTC" val="{{viewing.LockedUntil}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="LockToken" val="{{viewing.LockToken}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="MessageId" val="{{viewing.MessageId}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="ReplyTo" val="{{viewing.ReplyTo}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="ReplyToSessionId" val="{{viewing.ReplyToSessionId}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="ScheduledEnqueueTimeUTC" val="{{viewing.ScheduledEnqueueTime | date:'yyyy-MM-dd HH:mm:ss'}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="SequenceNumber" val="{{viewing.Sequence}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="SessionId" val="{{viewing.SessionId}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="Size" val="{{viewing.SizeInBytes}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="State" val="{{viewing.State}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="TimeToLive" val="{{viewing.TimeToLive}}"></li>
+            <li class="list-group-item" messageproperty model="viewing" title="To" val="{{viewing.To}}"></li>
+            <li class="list-group-item">
+                <strong>Custom Properties</strong>
+            </li>
+            <li class="list-group-item" messageproperty title="{{k}}" val="{{v}}" ng-repeat="(k,v) in viewing.CustomProperties"></li>
+</ul>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Message Body</h3>
+        </div>
+        <div class="panel-body">
+            <textarea class="message-body" ng-model="viewing.Body"></textarea>
+            <i class="clickable glyphicon glyphicon-new-window" ng-click="breakout('Message Body',viewing.Body)"></i>
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">Actions</h3>
+        </div>
+        <div class="panel-body">
+            <button ng-click="removeMessage(viewing)" type="button" class="btn btn-danger">Remove</button>
+            <button ng-click="requeueMessage(viewing)" type="button" class="btn btn-warning">Requeue</button>
+            <button ng-click="requeueModifiedMessage(viewing)" type="button" class="btn btn-warning">Requeue with modified Body</button>
+        </div>
+    </div>
+</div>
