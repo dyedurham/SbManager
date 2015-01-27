@@ -40,6 +40,7 @@ namespace SbManager.Startup
 
             builder.RegisterType<RequeueAndRemove>().As<IRequeueAndRemove>();
             builder.RegisterType<BusMonitor>().As<IBusMonitor>().SingleInstance();
+            builder.RegisterType<Sender>().As<ISender>().SingleInstance();
 
             builder.Register(c => NamespaceManager.CreateFromConnectionString(c.Resolve<IConfig>().BusConnectionString)).As<NamespaceManager>();
             builder.Register(c => MessagingFactory.CreateFromConnectionString(c.Resolve<IConfig>().BusConnectionString)).As<MessagingFactory>();

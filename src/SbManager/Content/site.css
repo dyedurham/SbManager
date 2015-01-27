@@ -1,4 +1,5 @@
 ﻿body { padding-top: 48px; padding-bottom: 48px; }
+
 .navbar-fixed-top .navbar-nav>li { float: left;}
 /*
 ul.entitylist li > a { display: inline-block; width: 600px; }
@@ -34,3 +35,20 @@ button i.glyphicon { padding-left: 0;}
 .bottom-bar { height: 46px; border-top: solid 3px #2b3e50; }
 .bottom-bar .navbar-nav { margin: 0;}
 .bottom-bar .navbar-nav>li { float: left;}
+
+
+.sbmicon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'sbmanagerfont';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+    font-size: 1.2em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.sbmicon-logo:before {
+  content: "m";
+}

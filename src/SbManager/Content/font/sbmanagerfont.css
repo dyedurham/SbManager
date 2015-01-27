@@ -1,0 +1,10 @@
+@font-face {
+	font-family: "sbmanagerfont";
+	src: url("sbmanagerfont.eot");
+	src: url("sbmanagerfont.eot#iefix") format("embedded-opentype"),
+	url("sbmanagerfont.woff") format("woff"),
+	url("sbmanagerfont.ttf") format("truetype"),
+	url("sbmanagerfont.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}

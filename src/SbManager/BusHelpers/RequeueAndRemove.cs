@@ -18,6 +18,9 @@ namespace SbManager.BusHelpers
         void RemoveAll(string topicPath, string subscriptionName);
         void RemoveOne(string queuePath, string messageId);
         void RemoveOne(string topicPath, string subscriptionName, string messageId);
+
+        void Kill(string queuePath, string messageId);
+        void Kill(string topicPath, string subscriptionName, string messageId);
     }
     public class RequeueAndRemove : IRequeueAndRemove
     {
@@ -187,6 +190,44 @@ namespace SbManager.BusHelpers
                     continue;
                 }
                 msg.Complete();
+            }
+        }
+
+        public void Kill(string queuePath, string messageId)
+        {
+            var client = _messagingFactory.CreateQueueClient(queuePath);
+            var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
+            var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
+
+            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
+            foreach (var msg in msgs)
+            {
+                if (msg.MessageId != messageId)
+                {
+                    msg.Abandon();
+                    continue;
+                }
+                msg.DeadLetter();
+                return;
+            }
+        }
+
+        public void Kill(string topicPath, string subscriptionName, string messageId)
+        {
+            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
+            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
+            var count = subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+
+            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
+            foreach (var msg in msgs)
+            {
+                if (msg.MessageId != messageId)
+                {
+                    msg.Abandon();
+                    continue;
+                }
+                msg.DeadLetter();
+                return;
             }
         }
 

@@ -164,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusHelpers\RequeueAndRemove.cs" />
+    <Compile Include="BusHelpers\Sender.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CQRS\Commands\CommandSender.cs" />
@@ -177,13 +178,17 @@
     <Compile Include="Extensions\BrokeredMessageExtensions.cs" />
     <Compile Include="Extensions\LogExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\ValueExtensions.cs" />
     <Compile Include="InternalCommandHandlers\DeleteAllBusEntititesCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteTopicCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteSubscriptionCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteQueueCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\RefreshCachedOverviewCommandHandler.cs" />
+    <Compile Include="InternalCommandHandlers\DeadLetterMessageCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\RequeueMessageCommandHandler%27.cs" />
     <Compile Include="InternalCommandHandlers\RemoveMessageCommandHandler.cs" />
+    <Compile Include="InternalCommandHandlers\PublishMessageCommandHandler.cs" />
+    <Compile Include="InternalCommandHandlers\SendMessageCommandHandler.cs" />
     <Compile Include="Models\ModelExtensions.cs" />
     <Compile Include="Models\ViewModelBuilders\OverviewModelBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\SubscriptionMessagesBuilder.cs" />
@@ -222,6 +227,9 @@
     <Content Include="Content\bootstrap.superhero.min.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\font\sbmanagerfont.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\site.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -251,6 +259,21 @@
     </Content>
     <None Include="Content\bootstrap-theme.css.map" />
     <None Include="Content\bootstrap.css.map" />
+    <None Include="Content\font\sbmanagerfont.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\font\sbmanagerfont.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\font\sbmanagerfont.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\font\sbmanagerfont.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\font\sbmanagerfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="fonts\glyphicons-halflings-regular.eot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
