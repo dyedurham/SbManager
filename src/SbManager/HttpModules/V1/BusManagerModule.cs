@@ -1,4 +1,6 @@
 ﻿using Nancy;
+using Nancy.ModelBinding;
+using Newtonsoft.Json;
 using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
 using SbManager.CQRS.ModelBuilders;
@@ -84,16 +86,25 @@ namespace SbManager.HttpModules.V1
                 };
             Post["queue/{qid}/remove"] =
                 _ => { _commandSender.Send(new RemoveMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
+            Post["queue/{qid}/dead"] =
+                _ => { _commandSender.Send(new DeadLetterMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
             Post["queue/{qid}/requeue"] =
                 _ => { _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
             Post["queue/{qid}/requeueModified"] =
                 _ => { _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName()) { NewBody = Request.Form.body}); return new { success = true }; };
             Post["topic/{tid}/{sid}/remove"] =
                 _ => { _commandSender.Send(new RemoveMessageCommand(Request.Form.messageId, To.String((object)_.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
+            Post["topic/{tid}/{sid}/dead"] =
+                _ => { _commandSender.Send(new DeadLetterMessageCommand(Request.Form.messageId, To.String((object)_.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
             Post["topic/{tid}/{sid}/requeue"] =
                 _ => { _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId,To.String( _.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
             Post["topic/{tid}/{sid}/requeueModified"] =
                 _ => { _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId, To.String(_.tid), To.String((object)_.sid).UnescapePathName()) { NewBody = Request.Form.body }); return new { success = true }; };
+
+            Post["queue/{qid}"] =
+                _ => { _commandSender.Send(new SendMessageCommand(To.String((object)_.qid).UnescapePathName(), this.Bind<Message>())); return new { success = true }; };
+            Post["topic/{tid}"] =
+                _ => { _commandSender.Send(new PublishMessageCommand(To.String((object)_.tid).UnescapePathName(), this.Bind<Message>())); return new { success = true }; };
 
         }
     }

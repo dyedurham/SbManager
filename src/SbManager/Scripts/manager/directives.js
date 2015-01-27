@@ -120,6 +120,15 @@ $app.directive('peek', ['$modal', function ($modal) {
                     setTimeout($scope.$parent.refresh,1);
                 });
             };
+            $scope.deadLetter = function (msg) {
+                $scope.peeking = true;
+                $scope.messages = [];
+                $.post(actionUrl + "/dead", { messageId: msg.MessageId }, function (d) {
+                    $scope.viewing = null;
+                    $scope.peek();
+                    setTimeout($scope.$parent.refresh, 1);
+                });
+            };
             $scope.forwardMessage = function (msg) {
                 alert('not implemented');
             };
