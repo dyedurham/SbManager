@@ -21,6 +21,8 @@ namespace SbManager.BusHelpers
 
         void Kill(string queuePath, string messageId);
         void Kill(string topicPath, string subscriptionName, string messageId);
+        void KillAll(string queuePath);
+        void KillAll(string topicPath, string subscriptionName);
     }
     public class RequeueAndRemove : IRequeueAndRemove
     {
@@ -198,7 +200,7 @@ namespace SbManager.BusHelpers
             var client = _messagingFactory.CreateQueueClient(queuePath);
             var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
             var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
-
+            
             var msgs = client.ReceiveBatch(Convert.ToInt32(count));
             foreach (var msg in msgs)
             {
@@ -228,6 +230,34 @@ namespace SbManager.BusHelpers
                 }
                 msg.DeadLetter();
                 return;
+            }
+        }
+
+        public void KillAll(string queuePath)
+        {
+            var client = _messagingFactory.CreateQueueClient(queuePath);
+            var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
+            var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
+            
+            for (var i = 0; i < count; i++)
+            {
+                var msg = client.Receive(new TimeSpan(0, 0, 5));
+                if (msg == null) break;
+                msg.DeadLetter();
+            }
+        }
+
+        public void KillAll(string topicPath, string subscriptionName)
+        {
+            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
+            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
+            var count = subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+
+            for (var i = 0; i < count; i++)
+            {
+                var msg = client.Receive(new TimeSpan(0, 0, 5));
+                if (msg == null) break;
+                msg.DeadLetter();
             }
         }
 
