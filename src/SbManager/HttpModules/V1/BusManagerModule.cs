@@ -86,16 +86,28 @@ namespace SbManager.HttpModules.V1
                 };
             Post["queue/{qid}/remove"] =
                 _ => { _commandSender.Send(new RemoveMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
+            Post["queue/{qid}/dead/{mid}"] =
+                _ => { _commandSender.Send(new DeadLetterMessageCommand(To.String((object)_.mid), To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
             Post["queue/{qid}/dead"] =
-                _ => { _commandSender.Send(new DeadLetterMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
+                _ =>
+                {
+                    _commandSender.Send(new DeadLetterAllMessagesCommand(To.String((object)_.qid).UnescapePathName()));
+                    return _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(To.String((object)_.qid).RemoveDeadLetterPath(), true));
+                };
             Post["queue/{qid}/requeue"] =
                 _ => { _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
             Post["queue/{qid}/requeueModified"] =
                 _ => { _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName()) { NewBody = Request.Form.body}); return new { success = true }; };
             Post["topic/{tid}/{sid}/remove"] =
                 _ => { _commandSender.Send(new RemoveMessageCommand(Request.Form.messageId, To.String((object)_.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
+            Post["topic/{tid}/{sid}/dead/{mid}"] =
+                _ => { _commandSender.Send(new DeadLetterMessageCommand(To.String((object)_.mid), To.String((object)_.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
             Post["topic/{tid}/{sid}/dead"] =
-                _ => { _commandSender.Send(new DeadLetterMessageCommand(Request.Form.messageId, To.String((object)_.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
+                _ =>
+                {
+                    _commandSender.Send(new DeadLetterAllMessagesCommand(To.String((object)_.tid), To.String((object)_.sid).UnescapePathName()));
+                    return _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(To.String((object)_.tid), To.String((object)_.sid).UnescapePathName(), true));
+                };
             Post["topic/{tid}/{sid}/requeue"] =
                 _ => { _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId,To.String( _.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
             Post["topic/{tid}/{sid}/requeueModified"] =

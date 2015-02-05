@@ -123,7 +123,7 @@ $app.directive('peek', ['$modal', function ($modal) {
             $scope.deadLetter = function (msg) {
                 $scope.peeking = true;
                 $scope.messages = [];
-                $.post(actionUrl + "/dead", { messageId: msg.MessageId }, function (d) {
+                $.post(actionUrl + "/dead/" + msg.MessageId, function (d) {
                     $scope.viewing = null;
                     $scope.peek();
                     setTimeout($scope.$parent.refresh, 1);

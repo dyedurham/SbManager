@@ -163,6 +163,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="BusHelpers\RequeueAndRemove.cs" />
     <Compile Include="BusHelpers\Sender.cs" />
     <Compile Include="Config.cs" />
@@ -179,6 +182,7 @@
     <Compile Include="Extensions\LogExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\ValueExtensions.cs" />
+    <Compile Include="InternalCommandHandlers\DeadLetterAllMessagesCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteAllBusEntititesCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteTopicCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteSubscriptionCommandHandler.cs" />
