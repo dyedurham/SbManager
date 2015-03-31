@@ -1,4 +1,4 @@
-SbManager
+SbManager [![Build status](https://ci.appveyor.com/api/projects/status/p9wywmn0so7l2bud?svg=true)](https://ci.appveyor.com/project/brucem/sbmanager)
 =========
 
 Installable web ui for managing Azure Service Bus (ASB) and Service Bus for Windows Server (SBWS)
@@ -16,9 +16,24 @@ While there is already a pretty good tool for doing the things SbManager does, S
 
 Additionally, SBWS has pretty poor monitoring capabilities, so SbManager allows us to expose REST endpoints for monitoring from tools such as PRTG
 
+## Screenshots
+(Ignore the temporary logo. In related news: got a good logo?)
+![SbManager Overview](http://i.imgur.com/34iafSQ.png)
+![SbManager Subscription](http://i.imgur.com/KumMAO9.png)
+
 ## Installing/Running
 
-//todo
+### Local dev/play
+
+1. Open solution in Visual Studio
+2. In project 'SbManager' app.config, edit 'connectionStrings'. This can be your connectionstring, or you can point it at a file that contains the connection string (as the app config defaults to) 
+3. Build. You can run from VS, or run SbManager.exe in the bin folder. This exe uses topshelf so can be installed (see below)
+
+### Packaging and Deploying
+
+//todo There's a lot that can be done here.
+
+At its simplest, build the app (as per above) and run 'SbManager install'. See: http://topshelf.readthedocs.org/en/latest/overview/commandline.html
 
 ## Using
 
