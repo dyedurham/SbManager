@@ -263,30 +263,30 @@
     </Content>
     <None Include="Content\bootstrap-theme.css.map" />
     <None Include="Content\bootstrap.css.map" />
-    <None Include="Content\font\sbmanagerfont.eot">
+    <Content Include="Content\font\sbmanagerfont.eot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\font\sbmanagerfont.otf">
+    </Content>
+    <Content Include="Content\font\sbmanagerfont.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\font\sbmanagerfont.svg">
+    </Content>
+    <Content Include="Content\font\sbmanagerfont.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\font\sbmanagerfont.ttf">
+    </Content>
+    <Content Include="Content\font\sbmanagerfont.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Content\font\sbmanagerfont.woff">
+    </Content>
+    <Content Include="Content\font\sbmanagerfont.woff">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="fonts\glyphicons-halflings-regular.eot">
+    </Content>
+    <Content Include="fonts\glyphicons-halflings-regular.eot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="fonts\glyphicons-halflings-regular.ttf">
+    </Content>
+    <Content Include="fonts\glyphicons-halflings-regular.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="fonts\glyphicons-halflings-regular.woff">
+    </Content>
+    <Content Include="fonts\glyphicons-halflings-regular.woff">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="SbManager.nuspec" />
     <None Include="packages.config" />
     <Content Include="Content\tmpl\manager\home.html">
