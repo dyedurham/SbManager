@@ -9,5 +9,8 @@
         <projectUrl>http://it.wiki.gxs.com.au/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Service Bus Manager</description>
+		<files>
+			<file src="bin\Release\*" target="" />
+		</files>
     </metadata>
 </package>
