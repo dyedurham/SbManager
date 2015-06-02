@@ -11,6 +11,6 @@
         <description>Service Bus Manager</description>
     </metadata>
 	<files>
-		<file src="bin\Release\*" target="" />
+		<file src="bin\Release\**\*.*" target="" />
 	</files>
 </package>
