@@ -59,7 +59,7 @@ namespace SbManager.Models.ViewModelBuilders
                 msg.ContentType = m.ContentType;
                 msg.IsBodyConsumed = m.IsBodyConsumed;
                 msg.DeliveryCount = m.DeliveryCount;
-                msg.CustomProperties = m.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
+                msg.CustomProperties = m.Properties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value == null ? null : kvp.Value.ToString());
                 msg.Body = m.GetBodyString();
 
                 resp.Messages.Add(msg);
