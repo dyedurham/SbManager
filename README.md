@@ -1,4 +1,4 @@
-SbManager [![Build status](https://ci.appveyor.com/api/projects/status/p9wywmn0so7l2bud?svg=true)](https://ci.appveyor.com/project/brucem/sbmanager)
+SbManager [![Build status](https://ci.appveyor.com/api/projects/status/p9wywmn0so7l2bud?svg=true)](https://ci.appveyor.com/project/brucem/sbmanager) [![Gitter chat](https://badges.gitter.im/globalx/globalx.svg)](https://gitter.im/GlobalX/SbManager)
 =========
 
 Installable web ui for managing Azure Service Bus (ASB) and Service Bus for Windows Server (SBWS)
