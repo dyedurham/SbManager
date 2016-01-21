@@ -1,4 +1,4 @@
-﻿var $app = angular.module('manager', ['ngRoute', 'ui.bootstrap']);
+﻿var $app = angular.module('manager', ['ngRoute', 'ui.bootstrap','flash']);
 window.applicationBasePath = "";
 
 $app.config(function ($routeProvider) {

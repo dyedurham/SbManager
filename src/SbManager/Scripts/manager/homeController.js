@@ -1,4 +1,4 @@
-﻿$app.controller('homeController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+﻿$app.controller('homeController', ['$scope', '$routeParams', 'Flash', function ($scope, $routeParams, Flash) {
     $scope.refresh = function () {
         $scope.model = null;
         $.ajax({
@@ -10,7 +10,7 @@
             },
             error: function (jqXHR) {
                 var err = $.parseJSON(jqXHR.responseText);
-                alert("ERROR: " + err.Title + err.Summary);
+                Flash.create('danger', err.Title + err.Summary);
             }
         });
     };
