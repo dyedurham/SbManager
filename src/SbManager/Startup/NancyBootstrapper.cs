@@ -29,6 +29,13 @@ namespace SbManager.Startup
             // No registrations should be performed in here, however you may
             // resolve things that are needed during application startup.
             _logger.Information("Nancy starting up");
+
+            pipelines.OnError += (ctx, exception) =>
+            {
+                ctx.Items.Add("OnErrorException", exception);
+                return null;
+            };
+
         }
 
         protected override void ConfigureApplicationContainer(ILifetimeScope existingContainer)

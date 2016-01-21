@@ -187,6 +187,7 @@
     <Compile Include="InternalCommandHandlers\DeleteTopicCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteSubscriptionCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteQueueCommandHandler.cs" />
+    <Compile Include="InternalCommandHandlers\ErrorStatusCodeHandler.cs" />
     <Compile Include="InternalCommandHandlers\RefreshCachedOverviewCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeadLetterMessageCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\RequeueMessageCommandHandler%27.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Models\ViewModelBuilders\QueueModelBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\SubscriptionModelBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\TopicModelBuilder.cs" />
+    <Compile Include="Models\ViewModels\Error.cs" />
     <Compile Include="Models\ViewModels\IHaveSettings.cs" />
     <Compile Include="Models\ViewModels\IHaveStatusInformation.cs" />
     <Compile Include="Models\ViewModels\MessageView.cs" />
