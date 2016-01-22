@@ -1,9 +1,10 @@
-﻿var $app = angular.module('manager', ['ngRoute', 'ui.bootstrap','alerts','dialogs.main']);
+﻿var $app = angular.module('manager', ['ngRoute', 'ui.bootstrap','alerts','dialogs.main','dialogs.default-translations']);
 window.applicationBasePath = "";
 
 $app.config(['$routeProvider','$translateProvider', function ($routeProvider, $translateProvider) {
 
-    $translateProvider.useSanitizeValueStrategy('sanitize');  
+    $translateProvider.useSanitizeValueStrategy('sanitize');
+    $translateProvider.preferredLanguage('en-US');
 
     $routeProvider
 		.when('/', {
@@ -32,5 +33,4 @@ $app.config(['$routeProvider','$translateProvider', function ($routeProvider, $t
 		})
 
 		.otherwise({ redirectTo: "/" });
-    ;
 }])
