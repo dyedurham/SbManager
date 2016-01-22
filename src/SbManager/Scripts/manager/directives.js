@@ -32,7 +32,7 @@ $app.directive('messageproperty', function () {
     return {
         restrict: 'EA',
         template: [
-                '<span class="badge"><input type="text" readonly="readonly" value="{{val}}" class="prop-view" /> <i class="clickable glyphicon glyphicon-new-window" ng-click="breakout(title,val)"></i></span>',
+                '<span class="badge col-md-6"><input type="text" readonly="readonly" value="{{val}}" class="prop-view col-md-11" /> <i class="clickable glyphicon glyphicon-new-window" ng-click="breakout(title,val)"></i></span>',
                 '{{title}}'
         ].join(''),
         scope: { viewing: '=model' },
