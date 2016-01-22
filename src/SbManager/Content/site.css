@@ -52,3 +52,10 @@ button i.glyphicon { padding-left: 0;}
 .sbmicon-logo:before {
   content: "m";
 }
+
+
+.bottom-col {
+    float: none;
+    vertical-align: bottom;
+    display: table-cell;
+  }

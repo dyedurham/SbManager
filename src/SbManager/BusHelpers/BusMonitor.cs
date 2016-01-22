@@ -38,8 +38,10 @@ namespace SbManager.BusHelpers
         private Overview Fetch()
         {
             var manager = Microsoft.ServiceBus.NamespaceManager.CreateFromConnectionString(_config.BusConnectionString);
+            
             var overview = new Overview
             {
+                BusAddress = manager.Address.AbsoluteUri,
                 Queues = manager.GetQueues().Select(e => new Queue
                 {
                     Status = e.Status.ToString(),

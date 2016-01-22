@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SbManager.Models.ViewModels
 {
@@ -6,5 +7,6 @@ namespace SbManager.Models.ViewModels
     {
         public List<Queue> Queues { get; set; }
         public List<Topic> Topics { get; set; }
+        public string BusAddress { get; set; }
     }
 }

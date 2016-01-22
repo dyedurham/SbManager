@@ -3,7 +3,16 @@
         <li class="active">Overview</li>
     </ul>
 
-    <h1 id="type"><i class="sbmicon sbmicon-logo"></i> SbManager</h1>
+    <div class="row">
+        <div class="col-lg-6 bottom-col">
+            <h1 id="type">
+                <i class="sbmicon sbmicon-logo"></i> SbManager
+            </h1>
+        </div>
+        <div class="col-lg-6 bottom-col">Connected to: {{model.BusAddress}}</div>
+    </div>
+    
+    
 
     <loading ng-if="!model"></loading>
 
