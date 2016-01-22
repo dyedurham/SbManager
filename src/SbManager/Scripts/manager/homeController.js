@@ -17,7 +17,7 @@
 
     $scope.deleteAll = function () {
         var dlg = dialogs.confirm("Delete everything?", "You are about to delete all the queues and topics on this bus. Whats done cannot be undone.");
-        dlg.result.then(function resolved(btn) {
+        dlg.result.then(function ok(btn) {
             $scope.model = null;
             $http({
                 method: 'POST',
@@ -28,17 +28,7 @@
                 alertService.add('danger', '<strong>' + data.Title + '</strong> ' + data.Summary);
             });
         },
-        function declined(btn) {
+        function cancel(btn) {
         });
-        //if (!window.confirm("You sure? This can't be undone and your world might explode.")) return;
-//        $scope.model = null;
-//        $http({
-//            method: 'POST',
-//            url: window.applicationBasePath + "/api/v1/busmanager/deleteall"
-//        }).success(function (data) {
-//            $scope.refresh();
-//        }).error(function (data, status, headers, config) {
-//            alertService.add('danger', '<strong>' + data.Title + '</strong> ' + data.Summary);
-//        });
     };
 }]);

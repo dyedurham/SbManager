@@ -1,21 +1,24 @@
-﻿$app.controller('topicController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    $scope.name = $routeParams.topic;
-    
-    $scope.refresh = function () {
-        $scope.model = null;
-        $.getJSON(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic, {}, function (d) {
-            $scope.model = d;
-            $scope.$digest();
-        });
-    };
+﻿$app.controller('topicController', [
+    '$scope', '$routeParams', 'dialogs', function($scope, $routeParams, dialogs) {
+        $scope.name = $routeParams.topic;
 
-    $scope.delete = function () {
-        if (!window.confirm("You sure? This can't be undone and your app might explode.")) return;
-        $scope.model = null;
-        $.post(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic + "/delete", function (d) {
-            window.location = "#/";
-        });
-    };
+        $scope.refresh = function() {
+            $scope.model = null;
+            $.getJSON(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic, {}, function(d) {
+                $scope.model = d;
+                $scope.$digest();
+            });
+        };
 
-    $scope.refresh();
-}]);
+        $scope.delete = function() {
+            var dlg = dialogs.confirm("Delete Topic", "Confirm you want to delete the topic?");
+            dlg.result.then(function ok() {
+                $scope.model = null;
+                $.post(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic + "/delete", function(d) {
+                    window.location = "#/";
+                });
+            }, function cancel() { return; });
+        };
+        $scope.refresh();
+    }
+]);
