@@ -46,7 +46,7 @@ $app.directive('messageproperty', function () {
         }
     };
 });
-$app.directive('peek', ['$modal', function ($modal) {
+$app.directive('peek', ['$uibModal', function ($uibModal) {
     return {
         restrict: 'EA',
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/peek.html',
@@ -83,7 +83,7 @@ $app.directive('peek', ['$modal', function ($modal) {
             $scope.breakout = function (label, value) {
                 value = value || "";
                 var cls = value.length > 100 ? 'lg' : 'sm';
-                $modal.open({
+                $uibModal.open({
                     template: [
                         '<div class="modal-header"><h3 class="modal-title">',label,'</h3></div>',
                         '<div class="modal-body"><textarea class="breakout-text-'+cls+'">',value,'</textarea></div>',
