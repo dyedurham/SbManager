@@ -1,9 +1,11 @@
-﻿var $app = angular.module('manager', ['ngRoute', 'ui.bootstrap','flash']);
+﻿var $app = angular.module('manager', ['ngRoute', 'ui.bootstrap','alerts','dialogs.main']);
 window.applicationBasePath = "";
 
-$app.config(function ($routeProvider) {
-    $routeProvider
+$app.config(['$routeProvider','$translateProvider', function ($routeProvider, $translateProvider) {
 
+    $translateProvider.useSanitizeValueStrategy('sanitize');  
+
+    $routeProvider
 		.when('/', {
 		    templateUrl: window.applicationBasePath + '/Content/tmpl/manager/home.html',
 		    controller: 'homeController'
@@ -31,4 +33,4 @@ $app.config(function ($routeProvider) {
 
 		.otherwise({ redirectTo: "/" });
     ;
-})
+}])
