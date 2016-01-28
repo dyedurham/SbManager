@@ -182,6 +182,7 @@
     <Compile Include="Extensions\LogExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\ValueExtensions.cs" />
+    <Compile Include="Models\CommonRequest.cs" />
     <Compile Include="InternalCommandHandlers\DeadLetterAllMessagesCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteAllBusEntititesCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteTopicCommandHandler.cs" />
@@ -329,6 +330,9 @@
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery.signalR-2.0.3.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\manager\pubSubService.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Scripts\manager\alertService.js">

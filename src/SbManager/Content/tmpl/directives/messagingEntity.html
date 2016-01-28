@@ -7,11 +7,11 @@
             <div class="panel-body">
                 <h2>
                     <i class="glyphicon glyphicon-align-justify"></i>
-                    {{model.ActiveMessageCount}}
+                    {{vm.ActiveMessageCount}}
                 </h2>
             </div>
-            <div ng-if="model.ActiveMessageCount > 0 && !model.Subscriptions" class="panel-footer">
-                <button ng-if="removeall" ng-click="removeall(false)" type="button" class="btn btn-danger">Remove all</button>
+            <div ng-if="vm.ActiveMessageCount > 0 && !vm.Subscriptions" class="panel-footer">
+                <button ng-if="removeall" ng-click="removeall({deadletter:false})" type="button" class="btn btn-danger">Remove all</button>
                 <button ng-if="deadletterall" ng-click="deadletterall()" type="button" class="btn btn-danger">DeadLetter all</button>
             </div>
         </div>
@@ -24,11 +24,11 @@
             <div class="panel-body">
                 <h2>
                     <i class="glyphicon glyphicon-trash"></i>
-                    {{model.DeadLetterCount}}
+                    {{vm.DeadLetterCount}}
                 </h2>
             </div>
-            <div ng-if="model.DeadLetterCount > 0 && !model.Subscriptions" class="panel-footer">
-                <button ng-if="removeall" ng-click="removeall(true)" type="button" class="btn btn-danger">Remove all</button>
+            <div ng-if="vm.DeadLetterCount > 0 && !vm.Subscriptions" class="panel-footer">
+                <button ng-if="removeall" ng-click="removeall({deadletter:true})" type="button" class="btn btn-danger">Remove all</button>
                 <button ng-if="requeue" ng-click="requeue()" type="button" class="btn btn-warning">Requeue all</button>
             </div>
         </div>
@@ -41,7 +41,7 @@
             <div class="panel-body">
                 <h2>
                     <i class="glyphicon glyphicon-time"></i>
-                    {{model.ScheduledMessageCount}}
+                    {{vm.ScheduledMessageCount}}
                 </h2>
             </div>
         </div>
@@ -54,7 +54,7 @@
             <div class="panel-body">
                 <h2>
                     <i class="glyphicon glyphicon-arrow-right"></i>
-                    {{model.TransferMessageCount}}
+                    {{vm.TransferMessageCount}}
                 </h2>
             </div>
         </div>
@@ -67,12 +67,12 @@
             <div class="panel-body">
                 <h2>
                     <i class="glyphicon glyphicon-random"></i>&nbsp;
-                    {{model.DeadTransferMessageCount}}
+                    {{vm.DeadTransferMessageCount}}
                 </h2>
             </div>
         </div>
     </div>
-    <div ng-if="model.SizeInBytes || model.SizeInBytes === 0" class="col-md-2">
+    <div ng-if="vm.SizeInBytes || vm.SizeInBytes === 0" class="col-md-2">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">Size</h3>
@@ -80,12 +80,12 @@
             <div class="panel-body">
                 <h2>
                     <i class="glyphicon glyphicon-hdd"></i>
-                    {{model.SizeInHumanReadable}}
+                    {{vm.SizeInHumanReadable}}
                 </h2>
             </div>
         </div>
     </div>
-    <div ng-if="model.NumberOfRules || model.NumberOfRules === 0" class="col-md-2">
+    <div ng-if="vm.NumberOfRules || vm.NumberOfRules === 0" class="col-md-2">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title"># of Rules</h3>
@@ -93,7 +93,7 @@
             <div class="panel-body">
                 <h2>
                     <i class="glyphicon glyphicon-list-alt"></i>
-                    {{model.NumberOfRules}}
+                    {{vm.NumberOfRules}}
                 </h2>
             </div>
         </div>
@@ -106,20 +106,20 @@
             <li class="list-group-item active">
                 Configuration
             </li>
-            <li class="list-group-item" ng-if="model.AutoDeleteOnIdle">
-                <span class="badge">{{model.AutoDeleteOnIdle.Human}}</span>
+            <li class="list-group-item" ng-if="vm.AutoDeleteOnIdle">
+                <span class="badge">{{vm.AutoDeleteOnIdle.Human}}</span>
                 Auto Delete on Idle
             </li>
-            <li class="list-group-item" ng-if="model.DefaultMessageTTL">
-                <span class="badge">{{model.DefaultMessageTTL.Human}}</span>
+            <li class="list-group-item" ng-if="vm.DefaultMessageTTL">
+                <span class="badge">{{vm.DefaultMessageTTL.Human}}</span>
                 Default Message Time-to-live
             </li>
-            <li class="list-group-item" ng-if="model.DuplicateDetectionWindow">
-                <span class="badge">{{model.DuplicateDetectionWindow.Human}}</span>
+            <li class="list-group-item" ng-if="vm.DuplicateDetectionWindow">
+                <span class="badge">{{vm.DuplicateDetectionWindow.Human}}</span>
                 Duplicate Message Detection Window
             </li>
-            <li class="list-group-item" ng-if="model.LockDuration">
-                <span class="badge">{{model.LockDuration.Human}}</span>
+            <li class="list-group-item" ng-if="vm.LockDuration">
+                <span class="badge">{{vm.LockDuration.Human}}</span>
                 Lock Duration (Peek Lock)
             </li>
         </ul>
@@ -130,23 +130,23 @@
                 Status Information
             </li>
             <li class="list-group-item">
-                <span class="badge">{{model.Status}}</span>
+                <span class="badge">{{vm.Status}}</span>
                 Status
             </li>
             <li class="list-group-item">
-                <span class="badge">{{model.IsReadOnly}}</span>
+                <span class="badge">{{vm.IsReadOnly}}</span>
                 Is Read Only
             </li>
             <li class="list-group-item">
-                <span class="badge">{{model.CreatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
+                <span class="badge">{{vm.CreatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
                 Created At
             </li>
             <li class="list-group-item">
-                <span class="badge">{{model.AccessedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
+                <span class="badge">{{vm.AccessedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
                 Accessed At
             </li>
             <li class="list-group-item">
-                <span class="badge">{{model.UpdatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
+                <span class="badge">{{vm.UpdatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
                 Updated At
             </li>
         </ul>

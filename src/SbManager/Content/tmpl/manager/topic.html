@@ -1,20 +1,24 @@
 ﻿<div class="container">
     <ul class="breadcrumb">
         <li><a href="#/">Overview</a></li>
-        <li class="active">{{name}}</li>
+        <li class="active">{{vm.name}}</li>
     </ul>
 
-    <h2 ng-if="!model">&nbsp;</h2>
-    <loading ng-if="!model"></loading>
+    <h2 ng-if="!vm.model">&nbsp;</h2>
+    <loading ng-if="!vm.model"></loading>
 
-    <div ng-if="model">
-        <h3><i class="glyphicon glyphicon-th"></i> {{model.Name}}</h3>
-        <messagingentity></messagingentity>
+    <div ng-if="vm.model">
+        <h3><i class="glyphicon glyphicon-th"></i> {{model.Name}}
+        </h3>
+        <messagingentity model="vm.model" removeall="vm.removeall(deadletter)" deadletterall="vm.deadletterall()" requeue="vm.requeue()"></messagingentity>
         <div class="row">
             <div class="col-md-8">
                 <h3>Subscriptions</h3>
                 <ul class="entitylist">
-                    <li ng-repeat="m in model.Subscriptions"><i class="glyphicon glyphicon-inbox"></i> <a href="#/topic/{{m.TopicName}}/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" /></li>
+                    <li ng-repeat="m in vm.model.Subscriptions">
+                        <i class="glyphicon glyphicon-inbox"></i> <a href="#/topic/{{m.TopicName}}/{{m.Name}}">{{m.Name}}</a>
+                        <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" />
+                    </li>
                 </ul>
             </div>
         </div>
@@ -23,9 +27,9 @@
 
 <div class="navbar navbar-fixed-bottom navbar-default bottom-bar" role="navigation">
     <nav class="container">
-        <ul class="nav navbar-nav" ng-if="model">
-            <li><button class="btn btn-success" ng-click="refresh()"><i class="glyphicon glyphicon-refresh btn-sm"></i> Refresh</button></li>
-            <li><button class="btn btn-danger" ng-click="delete()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete Topic</button></li>
+        <ul class="nav navbar-nav" ng-if="vm.model">
+            <li><button class="btn btn-success" ng-click="vm.refresh()"><i class="glyphicon glyphicon-refresh btn-sm"></i> Refresh</button></li>
+            <li><button class="btn btn-danger" ng-click="vm.delete()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete Topic</button></li>
         </ul>
     </nav>
 </div>

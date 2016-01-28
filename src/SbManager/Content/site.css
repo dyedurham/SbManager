@@ -3,7 +3,8 @@
 .navbar-fixed-top .navbar-nav>li { float: left;}
 /*
 ul.entitylist li > a { display: inline-block; width: 600px; }
-    */
+*/
+
 ul.entitylist { list-style-type: none; padding:0 }
 ul.entitylist li {padding: 2px 1px 3px 1px; clear:both;letter-spacing: -0.5px; }
 ul.entitylist li:hover { background-color: #253544; }
@@ -52,7 +53,6 @@ button i.glyphicon { padding-left: 0;}
 .sbmicon-logo:before {
   content: "m";
 }
-
 
 .bottom-col {
     float: none;
