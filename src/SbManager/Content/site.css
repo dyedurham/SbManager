@@ -3,7 +3,8 @@
 .navbar-fixed-top .navbar-nav>li { float: left;}
 /*
 ul.entitylist li > a { display: inline-block; width: 600px; }
-    */
+*/
+
 ul.entitylist { list-style-type: none; padding:0 }
 ul.entitylist li {padding: 2px 1px 3px 1px; clear:both;letter-spacing: -0.5px; }
 ul.entitylist li:hover { background-color: #253544; }
@@ -17,6 +18,7 @@ ul.entitylist li:hover { background-color: #253544; }
 .loading-dlg .progress .progress-bar { width: 100%;}
 
 .peek-btn { width: 100px; display: inline-block; vertical-align:middle; }
+.search-btn  { width: 200px; display: inline-block; vertical-align:middle; }
 
 .message-body { width:100%; height: 150px; }
 .breakout-text-sm { width:100%; height: 50px; }
@@ -52,3 +54,9 @@ button i.glyphicon { padding-left: 0;}
 .sbmicon-logo:before {
   content: "m";
 }
+
+.bottom-col {
+    float: none;
+    vertical-align: bottom;
+    display: table-cell;
+  }

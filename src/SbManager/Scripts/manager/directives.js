@@ -19,7 +19,13 @@ $app.directive('loading', function () {
 $app.directive('messagingentity', function () {
     return {
         restrict: 'EA',
-        templateUrl: window.applicationBasePath + '/Content/tmpl/directives/messagingEntity.html'
+        templateUrl: window.applicationBasePath + '/Content/tmpl/directives/messagingEntity.html',
+        scope: {
+            vm:'=model',
+            removeall: '&',
+            deadletterall: '&',
+            requeue:'&'
+        }
     };
 });
 $app.directive('messagedetails', function () {
@@ -32,7 +38,7 @@ $app.directive('messageproperty', function () {
     return {
         restrict: 'EA',
         template: [
-                '<span class="badge"><input type="text" readonly="readonly" value="{{val}}" class="prop-view" /> <i class="clickable glyphicon glyphicon-new-window" ng-click="breakout(title,val)"></i></span>',
+                '<span class="badge col-md-6"><input type="text" readonly="readonly" value="{{val}}" class="prop-view col-md-11" /> <i class="clickable glyphicon glyphicon-new-window" ng-click="breakout(title,val)"></i></span>',
                 '{{title}}'
         ].join(''),
         scope: { viewing: '=model' },
@@ -46,7 +52,7 @@ $app.directive('messageproperty', function () {
         }
     };
 });
-$app.directive('peek', ['$modal', function ($modal) {
+$app.directive('peek', ['$uibModal','$http','pubSubService', function ($uibModal,$http,pubSubService) {
     return {
         restrict: 'EA',
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/peek.html',
@@ -71,19 +77,19 @@ $app.directive('peek', ['$modal', function ($modal) {
                 $scope.peeking = true;
                 $scope.messages = [];
 
-                $.getJSON(actionUrl + "/messages/" + $scope.peekCount, function (d) {
+                $http.get(actionUrl + "/messages/" + $scope.peekCount).then(function success(response) {
                     $scope.peeking = false;
-                    $scope.messages = d.Messages;
-                    $scope.$digest();
+                    $scope.messages = response.data.Messages;
                 });
             };
+
             $scope.view = function (model) {
                 $scope.viewing = model;
             };
             $scope.breakout = function (label, value) {
                 value = value || "";
                 var cls = value.length > 100 ? 'lg' : 'sm';
-                $modal.open({
+                $uibModal.open({
                     template: [
                         '<div class="modal-header"><h3 class="modal-title">',label,'</h3></div>',
                         '<div class="modal-body"><textarea class="breakout-text-'+cls+'">',value,'</textarea></div>',
@@ -94,39 +100,43 @@ $app.directive('peek', ['$modal', function ($modal) {
             $scope.removeMessage = function (msg) {
                 $scope.peeking = true;
                 $scope.messages = [];
-                $.post(actionUrl + "/remove", { messageId: msg.MessageId }, function (d) {
-                    $scope.viewing = null;
-                    $scope.peek();
-                    setTimeout($scope.$parent.refresh, 1);
-                });
+
+                $http.post(actionUrl + "/remove", { messageId: msg.MessageId }).
+                    then(function success(response) {
+                        $scope.viewing = null;
+                        $scope.peek();
+                        pubSubService.publish('refresh');
+                    });
             };
             $scope.requeueMessage = function (msg) {
                 $scope.peeking = true;
                 $scope.messages = [];
 
-                $.post(actionUrl + "/requeue", { messageId: msg.MessageId }, function (d) {
+                $http.post(actionUrl + "/requeue", { messageId: msg.MessageId }).then(function success(response) {
                     $scope.viewing = null;
                     $scope.peek();
-                    setTimeout($scope.$parent.refresh,1);
+                    pubSubService.publish('refresh');
                 });
             };
             $scope.requeueModifiedMessage = function (msg) {
                 $scope.peeking = true;
                 $scope.messages = [];
 
-                $.post(actionUrl + "/requeueModified", { messageId: msg.MessageId, body: msg.Body }, function (d) {
+                $http.post(actionUrl + "/requeueModified", { messageId: msg.MessageId, body: msg.Body }).then(function success(response) {
                     $scope.viewing = null;
                     $scope.peek();
-                    setTimeout($scope.$parent.refresh,1);
+                    pubSubService.publish('refresh');
                 });
+
             };
             $scope.deadLetter = function (msg) {
                 $scope.peeking = true;
                 $scope.messages = [];
-                $.post(actionUrl + "/dead/" + msg.MessageId, function (d) {
+
+                $http.post(actionUrl + "/dead/" + msg.MessageId).then(function success(response) {
                     $scope.viewing = null;
                     $scope.peek();
-                    setTimeout($scope.$parent.refresh, 1);
+                    pubSubService.publish('refresh');
                 });
             };
             $scope.forwardMessage = function (msg) {

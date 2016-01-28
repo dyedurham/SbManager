@@ -1,21 +1,32 @@
-﻿$app.controller('topicController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    $scope.name = $routeParams.topic;
-    
-    $scope.refresh = function () {
-        $scope.model = null;
-        $.getJSON(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic, {}, function (d) {
-            $scope.model = d;
-            $scope.$digest();
-        });
-    };
+﻿$app.controller('topicController', [
+    '$routeParams', 'dialogs', '$http', 'pubSubService', function ($routeParams, dialogs, $http, pubSubService) {
+        var vm = this;
+        vm.name = $routeParams.topic;
 
-    $scope.delete = function () {
-        if (!window.confirm("You sure? This can't be undone and your app might explode.")) return;
-        $scope.model = null;
-        $.post(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic + "/delete", function (d) {
-            window.location = "#/";
-        });
-    };
+        vm.refresh = function() {
+            vm.model = null;
 
-    $scope.refresh();
-}]);
+            $http.get(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic).
+                then(function success(response) {
+                    vm.model = response.data;
+                });
+        };
+
+        pubSubService.subscribe('refresh',function(args) {
+            vm.refresh();
+        });
+
+        vm.delete = function() {
+            var dlg = dialogs.confirm("Delete Topic", "Confirm you want to delete the topic?");
+            dlg.result.then(function ok() {
+                vm.model = null;
+                $http.post(window.applicationBasePath + "/api/v1/busmanager/topic/" + $routeParams.topic + "/delete").
+                    then(function success(response) {
+                        window.location = "#/";
+                    });
+            });
+        };
+
+        vm.refresh();
+    }
+]);

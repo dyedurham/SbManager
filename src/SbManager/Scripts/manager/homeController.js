@@ -1,18 +1,38 @@
-﻿$app.controller('homeController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-    $scope.refresh = function () {
-        $scope.model = null;
-        $.getJSON(window.applicationBasePath + "/api/v1/busmanager/", {}, function (d) {
-            $scope.model = d;
-            $scope.$digest();
+﻿$app.controller('homeController', ['$routeParams', 'alertService','$http','dialogs','pubSubService', function ($routeParams, alertService,$http,dialogs,pubSubService) {
+    var vm = this;
+    vm.refresh = function () {
+        vm.model = null;
+        $http({
+            method: 'GET',
+            url: window.applicationBasePath + "/api/v1/busmanager/"
+        }).success(function (data, status, headers, config) {
+            vm.model = data;
+        }).error(function (data, status, headers, config) {
+            alertService.add('danger', '<strong>' + data.Title + '</strong> ' + data.Summary);
         });
     };
-    $scope.refresh();
 
-    $scope.deleteAll = function () {
-        if (!window.confirm("You sure? This can't be undone and your world might explode.")) return;
-        $scope.model = null;
-        $.post(window.applicationBasePath + "/api/v1/busmanager/deleteall", function (d) {
-            window.location = "#/";
+    pubSubService.subscribe('refresh',function(data) {
+        vm.refresh();
+    });
+
+    vm.alerts = alertService.get();
+    vm.refresh();
+
+    vm.deleteAll = function () {
+        var dlg = dialogs.confirm("Delete everything?", "You are about to delete all the queues and topics on this bus. Whats done cannot be undone.");
+        dlg.result.then(function ok(btn) {
+            vm.model = null;
+            $http({
+                method: 'POST',
+                url: window.applicationBasePath + "/api/v1/busmanager/deleteall"
+            }).success(function (data) {
+                vm.refresh();
+            }).error(function (data, status, headers, config) {
+                alertService.add('danger', '<strong>' + data.Title + '</strong> ' + data.Summary);
+            });
+        },
+        function cancel(btn) {
         });
     };
 }]);

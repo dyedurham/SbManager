@@ -1,3 +1,2 @@
-﻿$app.controller('homeController', ['$scope', '$routeParams', function ($scope, $routeParams) {
-
+﻿$app.controller('homeController', ['$routeParams', function ($routeParams) {
 }]);
