@@ -32,7 +32,8 @@ namespace SbManager.Startup
                     .Enrich.WithThreadId()                      //Add threadId for each log entry
                     .Enrich.FromLogContext()                    //Allow to add context values
                     .Enrich.WithProperty("RuntimeVersion", Environment.Version)
-                    .WriteTo.FileSinkDefinedFromConfig();
+                    .WriteTo.FileSinkDefinedFromConfig()
+                    .WriteTo.LiterateConsole();
 
             Log.Logger = loggerConfiguration.CreateLogger();
 
