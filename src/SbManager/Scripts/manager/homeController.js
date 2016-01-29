@@ -1,9 +1,17 @@
 ﻿$app.controller('homeController', ['$scope', '$routeParams', function ($scope, $routeParams) {
     $scope.refresh = function () {
         $scope.model = null;
-        $.getJSON(window.applicationBasePath + "/api/v1/busmanager/", {}, function (d) {
-            $scope.model = d;
-            $scope.$digest();
+        $.ajax({
+            url: window.applicationBasePath + "/api/v1/busmanager/",
+            dataType: 'json',
+            success: function(d) {
+                $scope.model = d;
+                $scope.$digest();
+            },
+            error: function (jqXHR) {
+                var err = $.parseJSON(jqXHR.responseText);
+                alert("ERROR: " + err.Title + err.Summary);
+            }
         });
     };
     $scope.refresh();
