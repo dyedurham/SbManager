@@ -12,13 +12,13 @@
             <div class="col-lg-6">
                 <h2>Queues</h2>
                 <ul class="entitylist">
-                    <li ng-repeat="m in model.Queues"><i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" /></li>
+                    <li ng-repeat="m in model.Queues"><i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" /></li>
                 </ul>
             </div>
             <div class="col-lg-6">
                 <h2>Topics</h2>
                 <ul class="entitylist">
-                    <li ng-repeat="m in model.Topics"><i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" /></li>
+                    <li ng-repeat="m in model.Topics"><i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" /></li>
                 </ul>
             </div>
         </div>
