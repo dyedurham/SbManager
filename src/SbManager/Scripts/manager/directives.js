@@ -4,9 +4,11 @@
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/queuelength.html',
         link: function ($scope, $element, $attrs) {
             $scope.active = parseInt($attrs.active,10) || 0;
-            $scope.dead = parseInt($attrs.dead,10) || 0;
+            $scope.dead = parseInt($attrs.dead, 10) || 0;
+            $scope.scheduled = parseInt($attrs.scheduled, 10) || 0;
             $scope.activeHighlight = !!$scope.active;
             $scope.deadHighlight = !!$scope.dead;
+            $scope.scheduledHighlight = !!$scope.scheduled;
         }
     };
 });
