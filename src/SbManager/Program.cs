@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using SbManager.Startup;
+using Serilog;
 using Topshelf;
 using Topshelf.Autofac;
 
@@ -15,6 +16,8 @@ namespace SbManager
             Service.Setup();
             HostFactory.Run(hostConfig =>
             {
+                hostConfig.UseSerilog(Log.Logger);
+
                 // Pass the Autofac container to Topshelf
                 hostConfig.UseAutofacContainer(Service.AppContainer);
 
