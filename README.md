@@ -61,7 +61,7 @@ We'd love everyone and anyone to contribute!
 2. Send a pull request with completed code and unit/integration tests.
 3. Need help? Or support getting your change through? Start a discussion in the issue and if needs be, we can take it offline from there.
 
-## UI Design Tenants
+## UI Design Tenets
 1. Consistent. Although we deal with different messaging entities, things should work the same across all
 2. Obvious. It should be clear what everything is and how to use everything. Nothing hidden behind right-clicks or mystery meat
 3. Minimal. Don't show things that aren't needed, and don't show things in a complicated way.
