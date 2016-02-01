@@ -1,0 +1,7 @@
+{
+  "name": "",
+  "version": "1.0.0",
+  "dependencies": {
+    "angular-translate": "^2.8.1"
+  }
+}

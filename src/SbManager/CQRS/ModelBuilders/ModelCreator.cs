@@ -18,7 +18,8 @@ namespace SbManager.CQRS.ModelBuilders
 
             if (builder == null) throw new InvalidOperationException("Could not resolve  builder for Model type " + typeof(TModel).FullName);
 
-            return builder.Build();
+            var model = builder.Build();
+            return model;
         }
 
         public TModel Build<TModel, TCriteria>(TCriteria criteria)
