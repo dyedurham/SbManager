@@ -241,6 +241,9 @@
     <Content Include="Content\bootstrap.superhero.min.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\font\sbmanagerfont.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
