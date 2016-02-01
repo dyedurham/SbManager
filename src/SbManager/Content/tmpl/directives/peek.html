@@ -6,13 +6,14 @@
             </div>
             <div class="panel-footer">
                 <strong>Top: </strong>
-                <input ng-model="peekCount" class="form-control peek-btn" type="number" />
+                <input ng-model="peekCount" class="form-control peek-btn" type="number"/>
                 <button ng-click="peek(peekCount)" type="button" class="btn btn-info">Peek</button>
+                <input ng-show="messages.length > 0" ng-model="searchText" placeholder="Filter messages" class="form-control search-btn" type="text" title="keyword filter matches the content of the message body (case insensitive)"/>
             </div>
             <div class="panel-body peek-list" ng-if="messages.length">
                 <table class="table">
                     <thead>
-                        <tr>    
+                        <tr>
                             <th>Message Id</th>
                             <th>Seq</th>
                             <th>Enq.Seq</th>
@@ -22,7 +23,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="m in messages" ng-class="{info: viewing && m.MessageId == viewing.MessageId}">
+                        <tr ng-repeat="m in messages | filter:searchText" ng-class="{info: viewing && m.MessageId == viewing.MessageId}">
                             <td><a href="" ng-click="$parent.view(m)">{{m.MessageId}}</a></td>
                             <td>{{m.Sequence}}</td>
                             <td>{{m.EnqueuedSequence}}</td>
