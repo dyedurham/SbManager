@@ -23,6 +23,9 @@
             </div>
         </div>
     </div>
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">
+        <span ng-bind-html="alert.msg | unsafe"></span>
+    </alert>
 </div>
 
 <div class="navbar navbar-fixed-bottom navbar-default bottom-bar" role="navigation">
@@ -33,3 +36,4 @@
         </ul>
     </nav>
 </div>
+
