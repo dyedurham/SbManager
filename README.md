@@ -18,8 +18,8 @@ Additionally, SBWS has pretty poor monitoring capabilities, so SbManager allows 
 
 ## Screenshots
 (Ignore the temporary logo. In related news: got a good logo?)
-![SbManager Overview](http://i.imgur.com/34iafSQ.png)
-![SbManager Subscription](http://i.imgur.com/KumMAO9.png)
+![SbManager Overview](http://i.imgur.com/CWS22Jq.png)
+![SbManager Subscription](http://i.imgur.com/6efmnu4.png)
 
 ## Installing/Running
 
