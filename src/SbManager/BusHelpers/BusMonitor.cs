@@ -100,6 +100,10 @@ namespace SbManager.BusHelpers
                 topic.DeadTransferMessageCount = topic.Subscriptions.Sum(s => s.DeadTransferMessageCount);
             }
 
+            overview.TotalDeadLetters = overview.Queues.Sum(q => q.DeadLetterCount) + overview.Topics.Sum(t => t.DeadLetterCount);
+            overview.TotalActiveMessages = overview.Queues.Sum(q => q.ActiveMessageCount) + overview.Topics.Sum(t => t.ActiveMessageCount);
+            overview.TotalScheduledMessages = overview.Queues.Sum(q => q.ScheduledMessageCount) + overview.Topics.Sum(t => t.ScheduledMessageCount);
+
             return overview;
         }
 
