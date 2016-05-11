@@ -6,5 +6,9 @@ namespace SbManager.Models.ViewModels
     {
         public List<Queue> Queues { get; set; }
         public List<Topic> Topics { get; set; }
+
+        public long TotalDeadLetters { get; set; }
+        public long TotalActiveMessages { get; set; }
+        public long TotalScheduledMessages { get; set; }
     }
 }
