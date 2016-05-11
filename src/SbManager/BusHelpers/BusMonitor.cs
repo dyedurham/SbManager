@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ServiceBus.Messaging;
 using SbManager.Models.ViewModels;
@@ -13,7 +14,7 @@ namespace SbManager.BusHelpers
     {
         private readonly IConfig _config;
         private const long RefreshTime = 5000;
-        private DateTime _lastTouch = new DateTime(1,1,1);
+        private DateTime _lastTouch = new DateTime(1, 1, 1);
         private Overview _cached;
         private readonly object _lock = new { };
         public Func<DateTime> GetTime = () => DateTime.Now;
@@ -100,11 +101,40 @@ namespace SbManager.BusHelpers
                 topic.DeadTransferMessageCount = topic.Subscriptions.Sum(s => s.DeadTransferMessageCount);
             }
 
-            overview.TotalDeadLetters = overview.Queues.Sum(q => q.DeadLetterCount) + overview.Topics.Sum(t => t.DeadLetterCount);
-            overview.TotalActiveMessages = overview.Queues.Sum(q => q.ActiveMessageCount) + overview.Topics.Sum(t => t.ActiveMessageCount);
-            overview.TotalScheduledMessages = overview.Queues.Sum(q => q.ScheduledMessageCount) + overview.Topics.Sum(t => t.ScheduledMessageCount);
+            var x = overview.Queues.Aggregate(new { DeadLetters = 0L, Active = 0L, Scheduled = 0L }, (_, queue) => new
+            {
+                DeadLetters = _.DeadLetters + queue.DeadLetterCount,
+                Active = _.Active + queue.ActiveMessageCount,
+                Scheduled = _.Scheduled + queue.ScheduledMessageCount
+            });
+
+            var queueMessageCounts = GetCounts(overview.Queues);
+            var topicMessageCounts = GetCounts(overview.Topics);
+
+            overview.TotalDeadLetters = queueMessageCounts.DeadLetterCount + topicMessageCounts.DeadLetterCount;
+            overview.TotalActiveMessages = queueMessageCounts.ActiveMessageCount + topicMessageCounts.ActiveMessageCount;
+            overview.TotalScheduledMessages = queueMessageCounts.ScheduledMessageCount + topicMessageCounts.ScheduledMessageCount;
 
             return overview;
+        }
+
+        private class MessageCounts
+        {
+            public long DeadLetterCount { get; set; }
+            public long ActiveMessageCount { get; set; }
+            public long ScheduledMessageCount { get; set; }
+        }
+
+        private static MessageCounts GetCounts(IEnumerable<IHaveMessageCounts> queueOrTopic)
+        {
+            var seed = new MessageCounts { DeadLetterCount = 0L, ActiveMessageCount = 0L, ScheduledMessageCount = 0L };
+
+            return queueOrTopic.Aggregate(seed, (_, queue) => new MessageCounts
+            {
+                DeadLetterCount = _.DeadLetterCount + queue.DeadLetterCount,
+                ActiveMessageCount = _.ActiveMessageCount + queue.ActiveMessageCount,
+                ScheduledMessageCount = _.ScheduledMessageCount + queue.ScheduledMessageCount
+            });
         }
 
         private bool Dirty(bool forceDirty)
