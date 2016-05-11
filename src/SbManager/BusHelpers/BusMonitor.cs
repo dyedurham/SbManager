@@ -101,13 +101,6 @@ namespace SbManager.BusHelpers
                 topic.DeadTransferMessageCount = topic.Subscriptions.Sum(s => s.DeadTransferMessageCount);
             }
 
-            var x = overview.Queues.Aggregate(new { DeadLetters = 0L, Active = 0L, Scheduled = 0L }, (_, queue) => new
-            {
-                DeadLetters = _.DeadLetters + queue.DeadLetterCount,
-                Active = _.Active + queue.ActiveMessageCount,
-                Scheduled = _.Scheduled + queue.ScheduledMessageCount
-            });
-
             var queueMessageCounts = GetCounts(overview.Queues);
             var topicMessageCounts = GetCounts(overview.Topics);
 
