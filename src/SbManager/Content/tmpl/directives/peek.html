@@ -6,7 +6,7 @@
             </div>
             <div class="panel-footer">
                 <strong>Top: </strong>
-                <input ng-model="peekCount" class="form-control peek-btn" type="number" />
+                <input ng-model="peekCount" class="form-control peek-btn" type="number" max="{{messageCount}}"/>
                 <button ng-click="peek(peekCount)" type="button" class="btn btn-info">Peek</button>
             </div>
             <div class="panel-body peek-list" ng-if="messages.length">

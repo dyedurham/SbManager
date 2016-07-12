@@ -57,9 +57,8 @@ $app.directive('peek', ['$modal', function ($modal) {
             $scope.messages = [];
             $scope.viewing = null;
             $scope.searched = false;
-            $scope.peekCount = 10;
             $scope.type = dead ? "Dead Letters" : "Active Messages";
-            $scope.messageCount = dead ? $scope.model.DeadLetterCount : $scope.model.ActiveMessageCount;
+            $scope.peekCount = $scope.messageCount = dead ? $scope.model.DeadLetterCount : $scope.model.ActiveMessageCount;
 
             var actionUrl = window.applicationBasePath + "/api/v1/busmanager/";
             if (dead && !topic) actionUrl += "queue/" + $scope.model.Name + "_$DeadLetterQueue";
