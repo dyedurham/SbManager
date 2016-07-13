@@ -52,20 +52,21 @@ $app.directive('messageproperty', function () {
         }
     };
 });
-$app.directive('peek', ['$modal', 'messageTypeConstants', function ($modal, messageTypeConstants) {
+$app.directive('peek', ['$modal', 'messageTypeConstants', 'peekViewFactory', function ($modal, messageTypeConstants, PeekViewFactory) {
     return {
         restrict: 'EA',
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/peek.html',
         scope: {model: "=model"},
         link: function ($scope, $element, $attrs) {
-            var dead = $scope.isDeadLetter = typeof ($attrs.dead) != "undefined" || false;
+            var peekView = new PeekViewFactory($attrs, $scope.model);
+            var dead = peekView.messageType === messageTypeConstants.dead;
             var topic = $scope.model.TopicName || null;
             $scope.messages = [];
             $scope.viewing = null;
             $scope.searched = false;
-            $scope.messageTypeDescription = dead ? "Dead Letters" : "Active Messages";
-            $scope.messageType = dead ? messageTypeConstants.dead : messageTypeConstants.active;
-            $scope.messageCount = dead ? $scope.model.DeadLetterCount : $scope.model.ActiveMessageCount;
+            $scope.messageTypeDescription = peekView.description;
+            $scope.messageType = peekView.messageType;
+            $scope.messageCount = peekView.messageCount;
             $scope.peekCount = $scope.messageCount;
             $scope.messageTypes = messageTypeConstants;
 

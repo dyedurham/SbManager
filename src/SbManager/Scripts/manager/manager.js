@@ -1,6 +1,8 @@
 ﻿var $app = angular.module('manager', ['ngRoute', 'ui.bootstrap']);
 window.applicationBasePath = "";
 
+$app.constant('_', window._);
+
 $app.config(function ($routeProvider) {
     $routeProvider
 
