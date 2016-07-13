@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.ServiceBus.Messaging;
 using SbManager.Extensions;
 using SbManager.Models.ViewModels;
@@ -56,6 +57,7 @@ namespace SbManager.Models.ViewModelBuilders
                 if (criteria.HaveLock) msg.LockedUntil = m.LockedUntilUtc;
                 msg.TimeToLive = m.TimeToLive;
                 msg.ScheduledEnqueueTime = m.ScheduledEnqueueTimeUtc;
+                msg.IsScheduled = !DateTime.Equals(m.ScheduledEnqueueTimeUtc, DateTime.MinValue);
                 msg.ContentType = m.ContentType;
                 msg.IsBodyConsumed = m.IsBodyConsumed;
                 msg.DeliveryCount = m.DeliveryCount;

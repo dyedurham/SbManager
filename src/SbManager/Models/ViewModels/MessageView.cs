@@ -32,6 +32,7 @@ namespace SbManager.Models.ViewModels
         public string ReplyTo { get; set; }
         public string ReplyToSessionId { get; set; }
         public DateTime ScheduledEnqueueTime { get; set; }
+        public bool IsScheduled { get; set; }
         public string SessionId { get; set; }
         public string State { get; set; }
         public TimeSpan TimeToLive { get; set; }
