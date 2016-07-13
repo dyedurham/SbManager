@@ -52,7 +52,7 @@ $app.directive('messageproperty', function () {
         }
     };
 });
-$app.directive('peek', ['$modal', 'messageTypeConstants', 'peekViewFactory', function ($modal, messageTypeConstants, PeekViewFactory) {
+$app.directive('peek', ['$modal', '_', 'messageTypeConstants', 'peekViewFactory', function ($modal, _, messageTypeConstants, PeekViewFactory) {
     return {
         restrict: 'EA',
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/peek.html',
@@ -79,10 +79,14 @@ $app.directive('peek', ['$modal', 'messageTypeConstants', 'peekViewFactory', fun
             $scope.peek = function () {
                 $scope.peeking = true;
                 $scope.messages = [];
+                var isScheduled = (peekView.messageType === messageTypeConstants.scheduled);
+                var calculatedPeekCount = isScheduled ?
+                    addActiveMessagesCountToPeekCount($scope.peekCount)
+                    : $scope.peekCount; //needed to extract scheduled messages
 
-                $.getJSON(actionUrl + "/messages/" + $scope.peekCount, function (d) {
+                $.getJSON(actionUrl + "/messages/" + calculatedPeekCount, function (d) {
                     $scope.peeking = false;
-                    $scope.messages = d.Messages;
+                    $scope.messages = isScheduled ? filterScheduledMessages(d.Messages) : d.Messages;
                     $scope.$digest();
                 });
             };
@@ -141,6 +145,16 @@ $app.directive('peek', ['$modal', 'messageTypeConstants', 'peekViewFactory', fun
             $scope.forwardMessage = function (msg) {
                 alert('not implemented');
             };
+
+            function addActiveMessagesCountToPeekCount(count) {
+                return count + $scope.model.ActiveMessageCount;
+            }
+
+            function filterScheduledMessages(messages) {
+                return _.filter(messages, function(message) {
+                    return _.lowerCase(message.State) === "scheduled"; //https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.messagestate.aspx
+                });
+            }
         }
     };
 }]);

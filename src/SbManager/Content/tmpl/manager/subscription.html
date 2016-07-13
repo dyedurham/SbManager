@@ -15,6 +15,7 @@
         <messagingentity></messagingentity>
         <peek ng-if="model.ActiveMessageCount" model="model"></peek>
         <peek ng-if="model.DeadLetterCount" model="model" dead></peek>
+        <peek ng-if="model.ScheduledMessageCount" model="model" scheduled></peek>
 
         <div class="panel panel-info">
             <div class="panel-heading">

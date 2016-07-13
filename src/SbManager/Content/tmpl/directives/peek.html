@@ -1,6 +1,6 @@
 ﻿<div class="row">
     <div ng-class="{'col-lg-12' : messages.length == 0, 'col-lg-6' : messages.length != 0 }">
-        <div class="panel" ng-class="{'panel-success': messageType == messageTypes.active, 'panel-danger': messageType == messageTypes.dead}">
+        <div class="panel" ng-class="{'panel-success': messageType === messageTypes.active, 'panel-danger': messageType === messageTypes.dead, 'panel-info': messageType === messageTypes.scheduled}">
             <div class="panel-heading">
                 <h3 class="panel-title"><span message-type-icon message-type="messageType"/>Peek {{messageTypeDescription}}</h3>
             </div>

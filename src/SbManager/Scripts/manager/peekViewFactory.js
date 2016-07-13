@@ -19,9 +19,11 @@
             this.messageCount = getCount(model);
         };
 
-        function getMessageType(attrs) {
+        function getMessageType(attrs) { //see how the directive is used to obtain these values
             if (_.has(attrs,'dead')) {
                 return messageTypeConstants.dead;
+            } else if (_.has(attrs, 'scheduled')) {
+                return messageTypeConstants.scheduled;
             }
             else {
                 return messageTypeConstants.active;
@@ -32,6 +34,8 @@
             switch(messageType) {
                 case messageTypeConstants.dead:
                     return "Dead Letters";
+                case messageTypeConstants.scheduled:
+                    return "Scheduled Messages";
                 default:
                     return "Active Messages";
             }
@@ -41,6 +45,8 @@
             switch (messageType) {
                 case messageTypeConstants.dead:
                     return model.DeadLetterCount;
+                case messageTypeConstants.scheduled:
+                    return model.ScheduledMessageCount;
                 default:
                     return model.ActiveMessageCount;
             }
