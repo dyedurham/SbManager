@@ -46,7 +46,7 @@ $app.directive('messageproperty', function () {
         }
     };
 });
-$app.directive('peek', ['$modal', 'peekViewFactory', function ($modal, peekViewFactory) {
+$app.directive('peek', ['$modal', '_', 'peekViewFactory', function ($modal, _, peekViewFactory) {
     return {
         restrict: 'EA',
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/peek.html',
@@ -69,10 +69,10 @@ $app.directive('peek', ['$modal', 'peekViewFactory', function ($modal, peekViewF
             $scope.peek = function () {
                 $scope.peeking = true;
                 $scope.messages = [];
-
-                $.getJSON(actionUrl + "/messages/" + $scope.peekCount, function (d) {
+                var calculatedPeekCount = peek.isScheduled ? addActiveMessagesCountToPeekCount($scope.peekCount) : $scope.peekCount; //needed to extract scheduled messages
+                $.getJSON(actionUrl + "/messages/" + calculatedPeekCount, function (d) {
                     $scope.peeking = false;
-                    $scope.messages = d.Messages;
+                    $scope.messages = peek.isScheduled ? filterScheduledMessages(d.Messages) : d.Messages;
                     $scope.$digest();
                 });
             };
@@ -131,6 +131,14 @@ $app.directive('peek', ['$modal', 'peekViewFactory', function ($modal, peekViewF
             $scope.forwardMessage = function (msg) {
                 alert('not implemented');
             };
+
+            function addActiveMessagesCountToPeekCount(count) {
+                return count + $scope.model.ActiveMessageCount;
+            }
+
+            function filterScheduledMessages(messages) {
+                return _.filter(messages, "IsScheduled");
+            }
         }
     };
 }]);
