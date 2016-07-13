@@ -52,21 +52,22 @@ $app.directive('messageproperty', function () {
         }
     };
 });
-$app.directive('peek', ['$modal', 'messageTypeConstants', function ($modal, messageTypeConstants) {
+$app.directive('peek', ['$modal', '_', 'messageTypeConstants', 'peekViewFactory', function ($modal, _, messageTypeConstants, PeekViewFactory) {
     return {
         restrict: 'EA',
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/peek.html',
         scope: {model: "=model"},
         link: function ($scope, $element, $attrs) {
-            var dead = $scope.isDeadLetter = typeof ($attrs.dead) != "undefined" || false;
+            var peekView = new PeekViewFactory($attrs, $scope.model);
+            var dead = peekView.messageType === messageTypeConstants.dead;
             var topic = $scope.model.TopicName || null;
             $scope.messages = [];
             $scope.viewing = null;
             $scope.searched = false;
-            $scope.peekCount = 10;
-            $scope.messageTypeDescription = dead ? "Dead Letters" : "Active Messages";
-            $scope.messageType = dead ? messageTypeConstants.dead : messageTypeConstants.active;
-            $scope.messageCount = dead ? $scope.model.DeadLetterCount : $scope.model.ActiveMessageCount;
+            $scope.messageTypeDescription = peekView.description;
+            $scope.messageType = peekView.messageType;
+            $scope.messageCount = peekView.messageCount;
+            $scope.peekCount = $scope.messageCount;
             $scope.messageTypes = messageTypeConstants;
 
             var actionUrl = window.applicationBasePath + "/api/v1/busmanager/";
@@ -78,10 +79,14 @@ $app.directive('peek', ['$modal', 'messageTypeConstants', function ($modal, mess
             $scope.peek = function () {
                 $scope.peeking = true;
                 $scope.messages = [];
+                var isScheduled = (peekView.messageType === messageTypeConstants.scheduled);
+                var calculatedPeekCount = isScheduled ?
+                    addActiveMessagesCountToPeekCount($scope.peekCount)
+                    : $scope.peekCount; //needed to extract scheduled messages
 
-                $.getJSON(actionUrl + "/messages/" + $scope.peekCount, function (d) {
+                $.getJSON(actionUrl + "/messages/" + calculatedPeekCount, function (d) {
                     $scope.peeking = false;
-                    $scope.messages = d.Messages;
+                    $scope.messages = isScheduled ? filterScheduledMessages(d.Messages) : d.Messages;
                     $scope.$digest();
                 });
             };
@@ -140,6 +145,16 @@ $app.directive('peek', ['$modal', 'messageTypeConstants', function ($modal, mess
             $scope.forwardMessage = function (msg) {
                 alert('not implemented');
             };
+
+            function addActiveMessagesCountToPeekCount(count) {
+                return count + $scope.model.ActiveMessageCount;
+            }
+
+            function filterScheduledMessages(messages) {
+                return _.filter(messages, function(message) {
+                    return _.lowerCase(message.State) === "scheduled"; //https://msdn.microsoft.com/en-us/library/microsoft.servicebus.messaging.messagestate.aspx
+                });
+            }
         }
     };
 }]);
