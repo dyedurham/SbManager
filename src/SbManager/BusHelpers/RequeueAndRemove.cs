@@ -83,7 +83,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateQueueClient(queuePath);
             var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
+            var count = GetQueueMessageCount(queuePath, queue);
             var sender = _messagingFactory.CreateMessageSender(queuePath.RemoveDeadLetterPath());
 
             var msgs = client.ReceiveBatch(Convert.ToInt32(count));
@@ -109,7 +109,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
             var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+            var count = GetSubscriptionMessageCount(subscriptionName, sub);
             var sender = client.MessagingFactory.CreateMessageSender(client.TopicPath);
 
             var msgs = client.ReceiveBatch(Convert.ToInt32(count));
@@ -135,7 +135,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateQueueClient(queuePath);
             var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
+            var count = GetQueueMessageCount(queuePath, queue);
 
             for (var i = 0; i < count; i++)
             {
@@ -149,7 +149,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
             var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+            var count = GetSubscriptionMessageCount(subscriptionName, sub);
 
             for (var i = 0; i < count; i++)
             {
@@ -163,7 +163,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateQueueClient(queuePath);
             var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
+            var count = GetQueueMessageCount(queuePath, queue);
 
             var msgs = client.ReceiveBatch(Convert.ToInt32(count));
             foreach (var msg in msgs)
@@ -181,7 +181,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
             var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+            var count = GetSubscriptionMessageCount(subscriptionName, sub);
 
             var msgs = client.ReceiveBatch(Convert.ToInt32(count));
             foreach (var msg in msgs)
@@ -199,7 +199,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateQueueClient(queuePath);
             var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
+            var count = GetQueueMessageCount(queuePath, queue);
             
             var msgs = client.ReceiveBatch(Convert.ToInt32(count));
             foreach (var msg in msgs)
@@ -218,7 +218,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
             var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+            var count = GetSubscriptionMessageCount(subscriptionName, sub);
 
             var msgs = client.ReceiveBatch(Convert.ToInt32(count));
             foreach (var msg in msgs)
@@ -237,8 +237,8 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateQueueClient(queuePath);
             var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : queue.MessageCountDetails.ActiveMessageCount;
-            
+            var count = GetQueueMessageCount(queuePath, queue);
+
             for (var i = 0; i < count; i++)
             {
                 var msg = client.Receive(new TimeSpan(0, 0, 5));
@@ -251,7 +251,7 @@ namespace SbManager.BusHelpers
         {
             var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
             var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+            var count = GetSubscriptionMessageCount(subscriptionName, sub);
 
             for (var i = 0; i < count; i++)
             {
@@ -290,5 +290,16 @@ namespace SbManager.BusHelpers
             }
             return cloned;
         }
+    
+        private static long GetQueueMessageCount(string queuePath, QueueDescription queue)
+        {
+            return queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : (queue.MessageCountDetails.ActiveMessageCount + queue.MessageCountDetails.ScheduledMessageCount);
+        }
+
+        private static long GetSubscriptionMessageCount(string subscriptionName, SubscriptionDescription sub)
+        {
+            return subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : sub.MessageCountDetails.ActiveMessageCount;
+        }
+
     }
 }
