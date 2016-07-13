@@ -46,25 +46,25 @@ $app.directive('messageproperty', function () {
         }
     };
 });
-$app.directive('peek', ['$modal', function ($modal) {
+$app.directive('peek', ['$modal', 'peekViewFactory', function ($modal, peekViewFactory) {
     return {
         restrict: 'EA',
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/peek.html',
         scope: {model: "=model"},
         link: function ($scope, $element, $attrs) {
-            var dead = $scope.isDeadLetter = typeof ($attrs.dead) != "undefined" || false;
+            var peek = new peekViewFactory($attrs, $scope.model);
             var topic = $scope.model.TopicName || null;
             $scope.messages = [];
             $scope.viewing = null;
             $scope.searched = false;
-            $scope.type = dead ? "Dead Letters" : "Active Messages";
-            $scope.peekCount = $scope.messageCount = dead ? $scope.model.DeadLetterCount : $scope.model.ActiveMessageCount;
+            $scope.title = peek.title;
+            $scope.peekCount = $scope.messageCount = peek.count;
 
             var actionUrl = window.applicationBasePath + "/api/v1/busmanager/";
-            if (dead && !topic) actionUrl += "queue/" + $scope.model.Name + "_$DeadLetterQueue";
-            if (dead && topic) actionUrl += "topic/" + $scope.model.TopicName + "/" + $scope.model.Name + "_$DeadLetterQueue";
-            if (!dead && !topic) actionUrl += "queue/" + $scope.model.Name;
-            if (!dead && topic) actionUrl += "topic/" + $scope.model.TopicName + "/" + $scope.model.Name;
+            if (peek.isDeadLetter && !topic) actionUrl += "queue/" + $scope.model.Name + "_$DeadLetterQueue";
+            if (peek.isDeadLetter && topic) actionUrl += "topic/" + $scope.model.TopicName + "/" + $scope.model.Name + "_$DeadLetterQueue";
+            if (!peek.isDeadLetter && !topic) actionUrl += "queue/" + $scope.model.Name;
+            if (!peek.isDeadLetter && topic) actionUrl += "topic/" + $scope.model.TopicName + "/" + $scope.model.Name;
 
             $scope.peek = function () {
                 $scope.peeking = true;
