@@ -63,10 +63,10 @@ $app.directive('peek', ['$modal', 'messageTypeConstants', function ($modal, mess
             $scope.messages = [];
             $scope.viewing = null;
             $scope.searched = false;
-            $scope.peekCount = 10;
             $scope.messageTypeDescription = dead ? "Dead Letters" : "Active Messages";
             $scope.messageType = dead ? messageTypeConstants.dead : messageTypeConstants.active;
             $scope.messageCount = dead ? $scope.model.DeadLetterCount : $scope.model.ActiveMessageCount;
+            $scope.peekCount = $scope.messageCount;
             $scope.messageTypes = messageTypeConstants;
 
             var actionUrl = window.applicationBasePath + "/api/v1/busmanager/";

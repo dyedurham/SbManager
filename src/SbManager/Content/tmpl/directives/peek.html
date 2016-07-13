@@ -6,7 +6,7 @@
             </div>
             <div class="panel-footer">
                 <strong>Top: </strong>
-                <input ng-model="peekCount" class="form-control peek-btn" type="number"/>
+                <input ng-model="peekCount" class="form-control peek-btn" type="number" max="{{messageCount}}"/>
                 <button ng-click="peek(peekCount)" type="button" class="btn btn-info">Peek</button>
                 <input ng-show="messages.length > 0" ng-model="searchText" placeholder="Filter messages" class="form-control search-btn" type="text" title="keyword filter matches the content of the message body (case insensitive)"/>
             </div>
