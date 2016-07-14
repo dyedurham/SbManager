@@ -320,9 +320,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.png" />
-    <Content Include="Scripts\jquery-2.1.4-vsdoc.js" />
-    <Content Include="Scripts\jquery-2.1.4.js" />
-    <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <Content Include="Scripts\jquery-3.0.0.intellisense.js" />
+    <Content Include="Scripts\jquery-3.0.0.js" />
+    <Content Include="Scripts\jquery-3.0.0.min.js" />
+    <Content Include="Scripts\jquery-3.0.0.slim.js" />
+    <Content Include="Scripts\jquery-3.0.0.slim.min.js" />
     <Content Include="Scripts\jquery.signalR-2.0.3.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -360,7 +362,8 @@
     <Content Include="Views\master.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Scripts\jquery-2.1.4.min.map" />
+    <None Include="Scripts\jquery-3.0.0.min.map" />
+    <None Include="Scripts\jquery-3.0.0.slim.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\api.html">
