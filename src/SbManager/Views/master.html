@@ -3,7 +3,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" ng-app="manager">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bus Manager</title>
     <link rel="stylesheet" href="/Content/bootstrap.superhero.min.css" />
     <link rel="stylesheet" href="/Content/site.css" />
@@ -23,17 +24,23 @@
     <script src="/Scripts/manager/queueController.js"></script>
     <script src="/Scripts/manager/topicController.js"></script>
     <script src="/Scripts/manager/subscriptionController.js"></script>
+
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <nav class="container">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#/"><i class="sbmicon sbmicon-logo"></i> SbManager</a></li>
-                <li><a href="#/">Home</a></li>
-                <li><a href="#/help">Help</a></li>
-            </ul>
-        </nav>
-    </div>
-    @Section['Content'];
+<!--[if lte IE 9]>
+<div class="alert alert-danger">
+<p>You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+</div>
+<![endif]-->
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <nav class="container">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#/"><i class="sbmicon sbmicon-logo"></i> SbManager</a></li>
+            <li><a href="#/">Home</a></li>
+            <li><a href="#/help">Help</a></li>
+        </ul>
+    </nav>
+</div>
+@Section['Content'];
 </body>
 </html>
