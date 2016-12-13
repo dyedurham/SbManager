@@ -201,6 +201,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\ValueExtensions.cs" />
     <Compile Include="InternalCommandHandlers\DeadLetterAllMessagesCommandHandler.cs" />
+    <Compile Include="InternalCommandHandlers\DeleteAllDeadLettersCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteAllBusEntititesCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteTopicCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\DeleteSubscriptionCommandHandler.cs" />

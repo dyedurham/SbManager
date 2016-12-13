@@ -1,4 +1,4 @@
-﻿$app.controller('homeController', ['$scope', '$routeParams', function ($scope, $routeParams) {
+﻿$app.controller('homeController', ['$scope', function ($scope) {
     $scope.refresh = function () {
         $scope.model = null;
         $.ajax({
@@ -17,10 +17,18 @@
     $scope.refresh();
 
     $scope.deleteAll = function () {
-        if (!window.confirm("You sure? This can't be undone and your world might explode.")) return;
+        if (!window.confirm("Are you sure you want to delete all topics and queues? This can't be undone and your world might explode.")) return;
         $scope.model = null;
         $.post(window.applicationBasePath + "/api/v1/busmanager/deleteall", function (d) {
-            window.location = "#/";
+            $scope.refresh();
+        });
+    };
+
+    $scope.deleteAllDeadLetters = function () {
+        if (!window.confirm("Are you sure you want to delete all dead letters? This can't be undone and your world might explode.")) return;
+        $scope.model = null;
+        $.post(window.applicationBasePath + "/api/v1/busmanager/deletealldeadletters", function () {
+            $scope.refresh();
         });
     };
 }]);

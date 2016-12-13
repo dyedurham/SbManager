@@ -30,6 +30,11 @@ namespace SbManager.HttpModules.V1
                     _commandSender.Send(new DeleteAllBusEntititesCommand());
                     return new { success = true };
                 };
+            Post["/deletealldeadletters"] =
+               _ => {
+                   _commandSender.Send(new DeleteAllDeadLettersCommand());
+                   return new { success = true };
+               };
             Get["/topic/{tid}"] =
                 _ => _modelCreator.Build<Topic, TopicCriteria>(new TopicCriteria(To.String((object)_.tid)));
             Get["/queue/{qid}"] =
