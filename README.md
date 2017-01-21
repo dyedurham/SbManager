@@ -19,21 +19,21 @@ Additionally, SBWS has pretty poor monitoring capabilities, so SbManager allows 
 ## Screenshots
 (Ignore the temporary logo. In related news: got a good logo?)
 ![SbManager Overview](http://i.imgur.com/CWS22Jq.png)
-![SbManager Subscription](http://i.imgur.com/6efmnu4.png)
+![SbManager Subscription](https://cloud.githubusercontent.com/assets/8009243/22172414/c1f532c0-dff1-11e6-9256-5abba7b3ae2a.png)
 
 ## Installing/Running
 
 ### Local dev/play
 
 1. Open solution in Visual Studio
-2. In project 'SbManager' app.config, edit 'connectionStrings'. This can be your connectionstring, or you can point it at a file that contains the connection string (as the app config defaults to) 
+2. In project 'SbManager' app.config, edit 'connectionStrings'. This can be your connectionstring, or you can point it at a file that contains the connection string (as the app config defaults to)
 3. Build. You can run from VS, or run SbManager.exe in the bin folder. This exe uses topshelf so can be installed (see below)
 
 ### Packaging and Deploying
 
 //todo There's a lot that can be done here.
 
-At its simplest, build the app (as per above) and run 
+At its simplest, build the app (as per above) and run
 ```
 SbManager install
 ```
