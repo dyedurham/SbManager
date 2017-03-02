@@ -1,6 +1,8 @@
-﻿$app.controller('homeController', ['$scope', function ($scope) {
+﻿$app.controller('homeController', ['$scope', 'messageTypeConstants', function ($scope, messageTypeConstants) {
+    $scope.messageTypes = messageTypeConstants;
     $scope.refresh = function () {
         $scope.model = null;
+        $scope.deadletterFilterEnabled = false;
         $.ajax({
             url: window.applicationBasePath + "/api/v1/busmanager/",
             dataType: 'json',
@@ -31,4 +33,8 @@
             $scope.refresh();
         });
     };
+
+    $scope.toggleDeadletterFilter = function () {
+        $scope.deadletterFilterEnabled = !$scope.deadletterFilterEnabled;
+    }
 }]);
