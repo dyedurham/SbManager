@@ -8,17 +8,38 @@
     <loading ng-if="!model"></loading>
 
     <div ng-if="model">
+        <div class="row" ng-if="model.TotalDeadLetters > 0">
+            <div class="panel">
+                <div class="panel-body">
+                    <div>
+                        <span message-type-icon message-type="messageTypes.dead" />
+                        <span ng-if="model.TotalDeadLetters == 1">There is currently 1 deadletter.</span>
+                        <span ng-if="model.TotalDeadLetters > 1">There are currently {{model.TotalDeadLetters}} deadletters.</span>
+                    </div>
+                    <div>
+                        <a href="" ng-if="!deadletterFilterEnabled" ng-click="toggleDeadletterFilter()">Show only queues and topics containing deadletters</a>
+                        <a href="" ng-if="deadletterFilterEnabled" ng-click="toggleDeadletterFilter()">Show all queues and topics</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-lg-6">
                 <h2>Queues</h2>
                 <ul class="entitylist">
-                    <li ng-repeat="m in model.Queues"><i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" /></li>
+                    <li ng-repeat="m in model.Queues" ng-if="!deadletterFilterEnabled || m.DeadLetterCount > 0">
+                        <i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" />
+                    </li>
                 </ul>
             </div>
             <div class="col-lg-6">
                 <h2>Topics</h2>
                 <ul class="entitylist">
-                    <li ng-repeat="m in model.Topics"><i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" /></li>
+                    <li ng-repeat="m in model.Topics" ng-if="!deadletterFilterEnabled || m.DeadLetterCount > 0">
+                        <i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" />
+                    </li>
+
                 </ul>
             </div>
         </div>
