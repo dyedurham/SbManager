@@ -37,6 +37,8 @@ button i.glyphicon { padding-left: 0;}
 .bottom-bar .navbar-nav { margin: 0;}
 .bottom-bar .navbar-nav>li { float: left;}
 
+.status { font-size: 90px; text-align: center; }
+
 
 .sbmicon {
   position: relative;

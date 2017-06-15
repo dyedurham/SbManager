@@ -11,6 +11,11 @@ $app.config(function ($routeProvider) {
 		    controller: 'homeController'
 		})
 
+        .when('/status', {
+            templateUrl: window.applicationBasePath + '/Content/tmpl/manager/status.html',
+            controller: 'statusController'
+        })
+
 		.when('/help', {
 		    templateUrl: window.applicationBasePath + '/Content/tmpl/manager/help.html',
 		    controller: 'helpController'

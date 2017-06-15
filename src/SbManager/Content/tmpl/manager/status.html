@@ -1,0 +1,16 @@
+﻿<div class="container">
+    <ul class="breadcrumb">
+        <li class="active">Status</li>
+    </ul>
+
+    <h1 id="type"><i class="sbmicon sbmicon-logo"></i> SbManager</h1>
+
+    <loading ng-if="!model"></loading>
+
+    <div ng-if="model">
+        <div class="row status">
+            <h2>Status</h2>
+            <queuelength active="{{model.TotalActiveMessages}}" dead="{{model.TotalDeadLetters}}" scheduled="{{model.TotalScheduledMessages}}" />
+        </div>
+    </div>
+</div>
