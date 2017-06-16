@@ -10,6 +10,7 @@
             $scope.deadHighlight = !!$scope.dead;
             $scope.scheduledHighlight = !!$scope.scheduled;
             $scope.messageTypes = messageTypeConstants;
+            $scope.multiline = $attrs.multiline;
         }
     };
 }]);
