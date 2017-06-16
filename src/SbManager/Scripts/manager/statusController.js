@@ -6,6 +6,8 @@
             dataType: 'json',
             success: function (d) {
                 $scope.model = d;
+                var currentTime = new Date();
+                $scope.time = currentTime.getHours() + ":" + currentTime.getMinutes();
                 $scope.$digest();
             },
             error: function (jqXHR) {
