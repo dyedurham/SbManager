@@ -11,6 +11,12 @@ $app.config(function ($routeProvider) {
 		    controller: 'homeController'
 		})
 
+        .when('/deadletters', {
+            templateUrl: window.applicationBasePath + '/Content/tmpl/manager/deadletters.html',
+            controller: 'homeController',
+            deadletterFilter: true
+        })
+
 		.when('/help', {
 		    templateUrl: window.applicationBasePath + '/Content/tmpl/manager/help.html',
 		    controller: 'helpController'

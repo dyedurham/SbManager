@@ -1,11 +1,17 @@
-﻿$app.controller('homeController', ['$scope', function ($scope) {
+﻿$app.controller('homeController', ['$scope', '$route', '_', function ($scope, $route, _) {
+
+    $scope.deadletterFilterEnabled = $route.current.$$route.deadletterFilter;
+
     $scope.refresh = function () {
         $scope.model = null;
+
         $.ajax({
             url: window.applicationBasePath + "/api/v1/busmanager/",
             dataType: 'json',
             success: function(d) {
                 $scope.model = d;
+                $scope.queuesWithDeadlettersCount = d.Queues.reduce((c, q) => c + (q.DeadLetterCount ? 1 : 0), 0);
+                $scope.topicsWithDeadlettersCount = d.Topics.reduce((c, t) => c + (t.DeadLetterCount ? 1 : 0), 0);
                 $scope.$digest();
             },
             error: function (jqXHR) {
