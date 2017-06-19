@@ -1,0 +1,30 @@
+﻿<div class="container">
+    <ul class="breadcrumb">
+        <li class="active">Deadletters</li>
+    </ul>
+
+    <h1 id="type"><i class="sbmicon sbmicon-logo"></i> SbManager</h1>
+
+    <loading ng-if="!model"></loading>
+
+    <div ng-if="model">
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Queues ({{queuesWithDeadlettersCount}}/{{model.Queues.length}})</h2>
+                <ul class="entitylist">
+                    <li ng-repeat="m in model.Queues" ng-if="m.DeadLetterCount > 0">
+                        <i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" />
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h2>Topics ({{topicsWithDeadlettersCount}}/{{model.Topics.length}})</h2>
+                <ul class="entitylist">
+                    <li ng-repeat="m in model.Topics" ng-if="m.DeadLetterCount > 0">
+                        <i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

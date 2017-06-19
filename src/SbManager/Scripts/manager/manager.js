@@ -12,7 +12,7 @@ $app.config(function ($routeProvider) {
 		})
 
         .when('/deadletters', {
-            templateUrl: window.applicationBasePath + '/Content/tmpl/manager/home.html',
+            templateUrl: window.applicationBasePath + '/Content/tmpl/manager/deadletters.html',
             controller: 'homeController',
             deadletterFilter: true
         })

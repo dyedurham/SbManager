@@ -1,7 +1,6 @@
 ﻿<div class="container">
     <ul class="breadcrumb">
-        <li ng-if="!deadletterFilterEnabled" class="active">Overview</li>
-        <li ng-if="deadletterFilterEnabled" class="active">Deadletters</li>
+        <li class="active">Overview</li>
     </ul>
 
     <h1 id="type"><i class="sbmicon sbmicon-logo"></i> SbManager</h1>
@@ -11,24 +10,20 @@
     <div ng-if="model">
         <div class="row">
             <div class="col-lg-6">
-                <h2>Queues<span ng-if="deadletterFilterEnabled"> ({{queuesWithDeadlettersCount}}/{{model.Queues.length}})</span></h2>
+                <h2>Queues</h2>
                 <ul class="entitylist">
-                    <li ng-repeat="m in model.Queues" ng-if="!deadletterFilterEnabled || m.DeadLetterCount > 0">
-                        <i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" />
-                    </li>
+                    <li ng-repeat="m in model.Queues"><i class="glyphicon glyphicon-th-list"></i> <a href="#/queue/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" /></li>
                 </ul>
             </div>
             <div class="col-lg-6">
-                <h2>Topics<span ng-if="deadletterFilterEnabled"> ({{topicsWithDeadlettersCount}}/{{model.Topics.length}})</span></h2>
+                <h2>Topics</h2>
                 <ul class="entitylist">
-                    <li ng-repeat="m in model.Topics" ng-if="!deadletterFilterEnabled || m.DeadLetterCount > 0">
-                        <i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" />
-                    </li>
-
+                    <li ng-repeat="m in model.Topics"><i class="glyphicon glyphicon-th"></i> <a href="#/topic/{{m.Name}}">{{m.Name}}</a> <queuelength class="pull-right" active="{{m.ActiveMessageCount}}" dead="{{m.DeadLetterCount}}" scheduled="{{m.ScheduledMessageCount}}" /></li>
                 </ul>
             </div>
         </div>
     </div>
+</div>
 
     <div class="navbar navbar-fixed-bottom navbar-default bottom-bar" role="navigation">
         <nav class="container">
