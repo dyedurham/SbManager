@@ -1,13 +1,9 @@
-﻿$app.controller('homeController', ['$scope', function ($scope) {
+﻿$app.controller('homeController', ['$scope', '$http', function ($scope, $http) {
     $scope.refresh = function () {
         $scope.model = null;
-        $.ajax({
-            url: window.applicationBasePath + "/api/v1/busmanager/",
-            dataType: 'json'
-        })
+        $http.get(window.applicationBasePath + "/api/v1/busmanager/")
         .then(function (d) {
-            $scope.model = d;
-            $scope.$digest();
+            $scope.model = d.data;
         })
         .catch(function (jqXHR) {
             var err = $.parseJSON(jqXHR.responseText);

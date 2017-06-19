@@ -1,15 +1,11 @@
-﻿$app.controller('statusController', ['$scope', function ($scope) {
+﻿$app.controller('statusController', ['$scope', '$http', function ($scope, $http) {
     $scope.refresh = function () {
         $scope.model = null;
-        $.ajax({
-            url: window.applicationBasePath + "/api/v1/busmanager/",
-            dataType: 'json'
-        })
+        $http.get(window.applicationBasePath + "/api/v1/busmanager/")
         .then(function (d) {
-            $scope.model = d;
+            $scope.model = d.data;
             var currentTime = new Date();
-            $scope.time = currentTime.getHours() + ":" + currentTime.getMinutes();
-            $scope.$digest();
+            $scope.time = currentTime.getHours() + ":" + ('0' + currentTime.getMinutes()).slice(-2);
         })
         .catch(function (jqXHR) {
             var err = $.parseJSON(jqXHR.responseText);
