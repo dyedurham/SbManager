@@ -5,8 +5,8 @@
         $http.get(window.applicationBasePath + "/api/v1/busmanager/")
         .then(function (d) {
             $scope.model = d.data;
-            $scope.queuesWithDeadlettersCount = d.Queues.reduce((c, q) => c + (q.DeadLetterCount ? 1 : 0), 0);
-            $scope.topicsWithDeadlettersCount = d.Topics.reduce((c, t) => c + (t.DeadLetterCount ? 1 : 0), 0);
+            $scope.queuesWithDeadlettersCount = d.data.Queues.reduce((c, q) => c + (q.DeadLetterCount ? 1 : 0), 0);
+            $scope.topicsWithDeadlettersCount = d.data.Topics.reduce((c, t) => c + (t.DeadLetterCount ? 1 : 0), 0);
         })
         .catch(function (jqXHR) {
             var err = $.parseJSON(jqXHR.responseText);
