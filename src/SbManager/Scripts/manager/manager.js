@@ -10,11 +10,17 @@ $app.config(function ($routeProvider) {
 		    templateUrl: window.applicationBasePath + '/Content/tmpl/manager/home.html',
 		    controller: 'homeController'
 		})
-
-        .when('/status', {
-            templateUrl: window.applicationBasePath + '/Content/tmpl/manager/status.html',
-            controller: 'statusController'
-        })
+  
+    .when('/status', {
+        templateUrl: window.applicationBasePath + '/Content/tmpl/manager/status.html',
+        controller: 'statusController'
+    })
+      
+    .when('/deadletters', {
+        templateUrl: window.applicationBasePath + '/Content/tmpl/manager/deadletters.html',
+        controller: 'homeController',
+        deadletterFilter: true
+    })
 
 		.when('/help', {
 		    templateUrl: window.applicationBasePath + '/Content/tmpl/manager/help.html',
