@@ -11,7 +11,7 @@
                 </h2>
             </div>
             <div ng-if="model.ActiveMessageCount > 0 && !model.Subscriptions" class="panel-footer">
-                <button ng-if="removeall" ng-click="removeall(false)" type="button" class="btn btn-danger">Remove all</button>
+                <button ng-if="removeall" ng-click="removeall(false)" type="button" class="btn-xs btn-danger remove-all-btn">Remove all</button>
                 <button ng-if="deadletterall" ng-click="deadletterall()" type="button" class="btn btn-danger">DeadLetter all</button>
             </div>
         </div>
@@ -28,7 +28,7 @@
                 </h2>
             </div>
             <div ng-if="model.DeadLetterCount > 0 && !model.Subscriptions" class="panel-footer">
-                <button ng-if="removeall" ng-click="removeall(true)" type="button" class="btn btn-danger">Remove all</button>
+                <button ng-if="removeall" ng-click="removeall(true)" type="button" class="btn-xs btn-danger remove-all-btn">Remove all</button>
                 <button ng-if="requeue" ng-click="requeue()" type="button" class="btn btn-warning">Requeue all</button>
             </div>
         </div>
