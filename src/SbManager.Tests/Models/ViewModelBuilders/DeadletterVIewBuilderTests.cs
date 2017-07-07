@@ -81,11 +81,11 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             _result.Deadletters.Count.ShouldBe(3);
 
-            _result.Deadletters.ShouldContain(dl => dl.Name == "bad.queue" && dl.DeadLetterCount == 1 && dl.Href == $"{FakeUrl}/#/queue/bad.queue");
+            _result.Deadletters.ShouldContain(dl => dl.Name == "bad.queue" && dl.DeadLetterCount == 1 && dl.Href == FakeUrl + "/#/queue/bad.queue");
 
-            _result.Deadletters.ShouldContain(dl => dl.Name == "ohmahgerd.queue" && dl.DeadLetterCount == 10000 && dl.Href == $"{FakeUrl}/#/queue/ohmahgerd.queue");
+            _result.Deadletters.ShouldContain(dl => dl.Name == "ohmahgerd.queue" && dl.DeadLetterCount == 10000 && dl.Href == FakeUrl + "/#/queue/ohmahgerd.queue");
 
-            _result.Deadletters.ShouldContain(dl => dl.Name == "bad.sub.bye" && dl.DeadLetterCount == 3 && dl.Href == $"{FakeUrl}/#/topic/bye/bad.sub.bye");
+            _result.Deadletters.ShouldContain(dl => dl.Name == "bad.sub.bye" && dl.DeadLetterCount == 3 && dl.Href == FakeUrl + "/#/topic/bye/bad.sub.bye");
         }
     }
 }

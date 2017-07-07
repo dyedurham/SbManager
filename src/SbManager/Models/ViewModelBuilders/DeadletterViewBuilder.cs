@@ -41,13 +41,13 @@ namespace SbManager.Models.ViewModelBuilders
         }
         private string CreateSubscriptionUrl(string topicName, string subName)
         {
-            return $"{_baseUrl}/#/topic/{topicName}/{subName}";
+            return _baseUrl + "/#/topic/" + topicName + "/" + subName;
         }
 
 
         private string CreateQueueUrl(string name)
         {
-            return $"{_baseUrl}/#/queue/{name}";
+            return _baseUrl + "/#/queue/" + name;
         }
     }
 }
