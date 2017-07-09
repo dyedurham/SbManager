@@ -8,8 +8,12 @@
             $scope.time = currentTime.getHours() + ":" + ('0' + currentTime.getMinutes()).slice(-2);
         })
         .catch(function (jqXHR) {
-            var err = $.parseJSON(jqXHR.responseText);
-            alert("ERROR: " + err.Title + err.Summary);
+            if (jqXHR.data == "") {
+                alert("Undefined Error");
+            } else {
+                var err = jqXHR.data;
+                alert("ERROR " + err.StatusCode + ": " + err.Message);
+            } 
         });
     };
     $scope.refresh();
