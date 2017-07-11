@@ -20,6 +20,8 @@ ul.entitylist li:hover { background-color: #253544; }
 .search-btn  { width: 200px; display: inline-block; vertical-align:middle; }
 .remove-all-btn { margin-bottom: 20px }
 
+.centered-panel { text-align: center }
+
 .message-body { width:100%; height: 150px; }
 .breakout-text-sm { width:100%; height: 50px; }
 .breakout-text-lg { width:100%; height: 400px; }
