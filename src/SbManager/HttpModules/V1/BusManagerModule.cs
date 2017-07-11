@@ -35,6 +35,8 @@ namespace SbManager.HttpModules.V1
                    _commandSender.Send(new DeleteAllDeadLettersCommand());
                    return new { success = true };
                };
+            Get["/deadletters"] =
+                _ => _modelCreator.Build<DeadletterView>(); 
             Get["/topic/{tid}"] =
                 _ => _modelCreator.Build<Topic, TopicCriteria>(new TopicCriteria(To.String((object)_.tid)));
             Get["/queue/{qid}"] =
