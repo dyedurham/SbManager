@@ -102,6 +102,7 @@
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="InternalCommandHandlers\RefreshCachedOverviewCommandHandlerTests.cs" />
     <Compile Include="Models\ModelExtensionsTests.cs" />
+    <Compile Include="Models\ViewModelBuilders\DeadletterVIewBuilderTests.cs" />
     <Compile Include="Models\ViewModelBuilders\OverviewModelBuilderTests.cs" />
     <Compile Include="Models\ViewModelBuilders\QueueModelBuilderTests.cs" />
     <Compile Include="Models\ViewModelBuilders\SubscriptionModelBuilderTests.cs" />

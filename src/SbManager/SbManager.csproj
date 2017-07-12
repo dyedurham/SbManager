@@ -215,12 +215,14 @@
     <Compile Include="InternalCommandHandlers\PublishMessageCommandHandler.cs" />
     <Compile Include="InternalCommandHandlers\SendMessageCommandHandler.cs" />
     <Compile Include="Models\ModelExtensions.cs" />
+    <Compile Include="Models\ViewModelBuilders\DeadletterViewBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\OverviewModelBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\SubscriptionMessagesBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\QueueMessagesBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\QueueModelBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\SubscriptionModelBuilder.cs" />
     <Compile Include="Models\ViewModelBuilders\TopicModelBuilder.cs" />
+    <Compile Include="Models\ViewModels\DeadletterView.cs" />
     <Compile Include="Models\ViewModels\Error.cs" />
     <Compile Include="Models\ViewModels\IHaveSettings.cs" />
     <Compile Include="Models\ViewModels\IHaveStatusInformation.cs" />
