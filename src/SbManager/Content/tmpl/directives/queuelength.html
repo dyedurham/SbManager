@@ -1,3 +1,5 @@
 ﻿ <span class="label" ng-class="{'label-success':activeHighlight, 'label-default':!activeHighlight}"><span message-type-icon message-type="messageTypes.active" /> {{active}}</span>
- <span class="label" ng-class="{'label-danger':deadHighlight, 'label-default':!deadHighlight}"><span message-type-icon message-type="messageTypes.dead" /> {{dead}}</span>
- <span class="label" ng-class="{'label-info':scheduledHighlight, 'label-default':!scheduledHighlight}"><span message-type-icon message-type="messageTypes.scheduled" /> {{scheduled}}</span>
+ <br ng-if="multiline"/>
+<span class="label" ng-class="{'label-danger':deadHighlight, 'label-default':!deadHighlight}"><span message-type-icon message-type="messageTypes.dead" /> {{dead}}</span>
+<br ng-if="multiline" />
+<span class="label" ng-class="{'label-info':scheduledHighlight, 'label-default':!scheduledHighlight}"><span message-type-icon message-type="messageTypes.scheduled" /> {{scheduled}}</span>
