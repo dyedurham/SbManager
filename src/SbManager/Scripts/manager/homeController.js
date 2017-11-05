@@ -1,4 +1,4 @@
-﻿$app.controller('homeController', ['$scope', '$http', '$route', '_', function ($scope, $http, $route, _) {
+﻿$app.controller('homeController', ['$scope', '$http', '$route', '$log', function ($scope, $http, $route, $log) {
     $scope.deadletterFilterEnabled = $route.current.$$route.deadletterFilter;
     $scope.refresh = function () {
         $scope.model = null;
@@ -10,10 +10,10 @@
         })
         .catch(function (jqXHR) {
             if (jqXHR.data == "") {
-                alert("Undefined Error");
+                $log.error("Undefined Error");
             } else {
                 var err = jqXHR.data;
-                alert("ERROR " + err.StatusCode + ": " + err.Message);
+                $log.error(err.StatusCode + ": " + err.Message);
             }
         });
     };
