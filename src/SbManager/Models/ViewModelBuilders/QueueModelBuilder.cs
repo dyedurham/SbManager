@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SbManager.BusHelpers;
 using SbManager.Models.ViewModels;
 
@@ -25,9 +26,9 @@ namespace SbManager.Models.ViewModelBuilders
             _busMonitor = busMonitor;
         }
 
-        public Queue Build(QueueCriteria criteria)
+        public async Task<Queue> Build(QueueCriteria criteria)
         {
-            return _busMonitor.GetOverview(criteria.RequireFresh).Queues.Single(q => String.Equals(q.Name, criteria.Queue, StringComparison.CurrentCultureIgnoreCase));
+            return (await _busMonitor.GetOverview(criteria.RequireFresh)).Queues.Single(q => String.Equals(q.Name, criteria.Queue, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

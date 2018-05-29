@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using SbManager.BusHelpers;
@@ -95,11 +96,11 @@ namespace SbManager.Tests.Models.ViewModelBuilders
             _busMonitor.GetOverview().Returns(overview);
         }
 
-        void WhenBuildingModel(string topicname, bool forceFresh)
+        async Task WhenBuildingModel(string topicname, bool forceFresh)
         {
             try
             {
-                _result = _builder.Build(new TopicCriteria(topicname, forceFresh));
+                _result = await _builder.Build(new TopicCriteria(topicname, forceFresh));
             }
             catch (Exception ex)
             {

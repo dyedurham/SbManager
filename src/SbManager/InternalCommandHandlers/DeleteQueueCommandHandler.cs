@@ -1,4 +1,5 @@
-﻿using Microsoft.ServiceBus;
+﻿using System.Threading.Tasks;
+using Mossharbor.AzureWorkArounds.ServiceBus;
 using SbManager.CQRS.Commands;
 
 namespace SbManager.InternalCommandHandlers
@@ -21,9 +22,10 @@ namespace SbManager.InternalCommandHandlers
             _namespaceManager = namespaceManager;
         }
 
-        public void Execute(DeleteQueueCommand command)
+        public Task Execute(DeleteQueueCommand command)
         {
             _namespaceManager.DeleteQueue(command.Path);
+            return Task.CompletedTask;
         }
     }
 }

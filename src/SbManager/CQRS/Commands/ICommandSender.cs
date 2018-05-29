@@ -1,9 +1,11 @@
-﻿namespace SbManager.CQRS.Commands
+﻿using System.Threading.Tasks;
+
+namespace SbManager.CQRS.Commands
 {
     public interface ICommandSender
     {
-        void Send<TCommand>(TCommand command) where TCommand : class, ICommand;
-        TResult SendWithResult<TCommand, TResult>(TCommand command) where TCommand : class, ICommand;
+        Task Send<TCommand>(TCommand command) where TCommand : class, ICommand;
+        Task<TResult> SendWithResult<TCommand, TResult>(TCommand command) where TCommand : class, ICommand;
     }
 
     public interface ICommandHandlerBase { }
@@ -12,12 +14,12 @@
     public interface ICommandHandler<in TCommand> : ICommandHandlerBase
         where TCommand : class, ICommand
     {
-        void Execute(TCommand command);
+        Task Execute(TCommand command);
     }
 
-    public interface ICommandHandlerWithResult<in TCommand, out TResult> : ICommandHandler<TCommand>, ICommandHandlerBase
+    public interface ICommandHandlerWithResult<in TCommand, TResult> : ICommandHandler<TCommand>, ICommandHandlerBase
         where TCommand : class, ICommand
     {
-        TResult ExecuteWithResult(TCommand command);
+        Task<TResult> ExecuteWithResult(TCommand command);
     }
 }

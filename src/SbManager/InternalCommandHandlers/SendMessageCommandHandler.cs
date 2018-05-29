@@ -1,4 +1,5 @@
-﻿using SbManager.BusHelpers;
+﻿using System.Threading.Tasks;
+using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
 using SbManager.Models.ViewModels;
 
@@ -24,9 +25,9 @@ namespace SbManager.InternalCommandHandlers
             _sender = sender;
         }
 
-        public void Execute(SendMessageCommand command)
+        public async Task Execute(SendMessageCommand command)
         {
-            _sender.Send(command.Message, command.Queue);
+            await _sender.Send(command.Message, command.Queue);
         }
     }
 }

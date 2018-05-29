@@ -1,4 +1,5 @@
-﻿using SbManager.BusHelpers;
+﻿using System.Threading.Tasks;
+using SbManager.BusHelpers;
 using SbManager.Models.ViewModels;
 
 namespace SbManager.Models.ViewModelBuilders
@@ -11,9 +12,9 @@ namespace SbManager.Models.ViewModelBuilders
         {
             _busMonitor = busMonitor;
         }
-        public Overview Build()
+        public async Task<Overview> Build()
         {
-            return _busMonitor.GetOverview();
+            return await _busMonitor.GetOverview();
         }
     }
 }

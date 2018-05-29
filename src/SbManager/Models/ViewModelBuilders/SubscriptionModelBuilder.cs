@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using SbManager.BusHelpers;
 using SbManager.Models.ViewModels;
 
@@ -27,9 +28,9 @@ namespace SbManager.Models.ViewModelBuilders
             _busMonitor = busMonitor;
         }
 
-        public Subscription Build(SubscriptionCriteria criteria)
+        public async Task<Subscription> Build(SubscriptionCriteria criteria)
         {
-            return _busMonitor.GetOverview(criteria.RequireFresh)
+            return (await _busMonitor.GetOverview(criteria.RequireFresh))
                 .Topics.Single(t => String.Equals(t.Name, criteria.Topic, StringComparison.CurrentCultureIgnoreCase))
                 .Subscriptions.Single(s => String.Equals(s.Name, criteria.Subscription, StringComparison.CurrentCultureIgnoreCase));
         }

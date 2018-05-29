@@ -1,7 +1,6 @@
 ﻿using System;
 using Autofac;
-using Microsoft.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
+using Mossharbor.AzureWorkArounds.ServiceBus;
 using Nancy.Bootstrapper;
 using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;

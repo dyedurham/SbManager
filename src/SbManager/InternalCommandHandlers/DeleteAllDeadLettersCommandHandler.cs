@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using System.ServiceModel;
-using Microsoft.ServiceBus;
+using System.Threading.Tasks;
+using Mossharbor.AzureWorkArounds.ServiceBus;
 using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
 
@@ -21,7 +21,7 @@ namespace SbManager.InternalCommandHandlers
             _requeueAndRemove = requeueAndRemove;
         }
 
-        public void Execute(DeleteAllDeadLettersCommand command)
+        public async Task Execute(DeleteAllDeadLettersCommand command)
         {
             var topics = _namespaceManager.GetTopics().ToArray();
             foreach (var topic in topics)
@@ -29,14 +29,14 @@ namespace SbManager.InternalCommandHandlers
                 var subscriptions = _namespaceManager.GetSubscriptions(topic.Path);
                 foreach (var subscription in subscriptions)
                 {
-                    _requeueAndRemove.RemoveAll(topic.Path, subscription.Name + DeadLetterQueueSuffix);
+                    await _requeueAndRemove.RemoveAll(topic.Path, subscription.Name + DeadLetterQueueSuffix);
                 }
             }
 
             var queues = _namespaceManager.GetQueues().ToArray();
             foreach (var queue in queues)
             {
-                _requeueAndRemove.RemoveAll(queue.Path + DeadLetterQueueSuffix);
+                await _requeueAndRemove.RemoveAll(queue.Path + DeadLetterQueueSuffix);
             }
         }
     }
