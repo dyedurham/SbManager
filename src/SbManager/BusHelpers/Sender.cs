@@ -1,15 +1,15 @@
-﻿using System.IO;
-using System.Text;
-using Microsoft.ServiceBus.Messaging;
+﻿using System.Text;
+using System.Threading.Tasks;
 using SbManager.Extensions;
 using SbManager.Models.ViewModels;
+using BrokeredMessage = Microsoft.Azure.ServiceBus.Message;
 
 namespace SbManager.BusHelpers
 {
     public interface ISender
     {
-        void Send(Message message, string queuePath);
-        void Publish(Message message, string topicPath);
+        Task Send(Message message, string queuePath);
+        Task Publish(Message message, string topicPath);
     }
 
     public class Sender : ISender
@@ -21,23 +21,21 @@ namespace SbManager.BusHelpers
             _messagingFactory = messagingFactory;
         }
 
-        public void Send(Message message, string queuePath)
+        public async Task Send(Message message, string queuePath)
         {
-            var client = _messagingFactory.CreateQueueClient(queuePath);
-            var sender = client.MessagingFactory.CreateMessageSender(client.Path);
-            sender.Send(Map(message));
+            var sender = _messagingFactory.CreateMessageSender(queuePath);
+            await sender.SendAsync(Map(message));
         }
 
-        public void Publish(Message message, string topicPath)
+        public async Task Publish(Message message, string topicPath)
         {
-            var client = _messagingFactory.CreateTopicClient(topicPath);
-            var sender = client.MessagingFactory.CreateMessageSender(client.Path);
-            sender.Send(Map(message));
+            var sender = _messagingFactory.CreateMessageSender(topicPath);
+            await sender.SendAsync(Map(message));
         }
 
         private BrokeredMessage Map(Message message)
         {
-            var brokered = new BrokeredMessage(new MemoryStream(Encoding.UTF8.GetBytes(message.Body)), true);
+            var brokered = new BrokeredMessage(Encoding.UTF8.GetBytes(message.Body));
             if (message.Label.HasValue()) brokered.Label = message.Label;
             if (message.ContentType.HasValue()) brokered.ContentType = message.ContentType;
             if (message.MessageId.HasValue()) brokered.MessageId = message.MessageId;
@@ -53,7 +51,7 @@ namespace SbManager.BusHelpers
             {
                 foreach (var property in message.CustomProperties)
                 {
-                    brokered.Properties.Add(property.Key, property.Value);
+                    brokered.UserProperties.Add(property.Key, property.Value);
                 }
             }
 

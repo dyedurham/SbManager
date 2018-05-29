@@ -1,4 +1,5 @@
-﻿using Microsoft.ServiceBus;
+﻿using System.Threading.Tasks;
+using Mossharbor.AzureWorkArounds.ServiceBus;
 using SbManager.CQRS.Commands;
 
 namespace SbManager.InternalCommandHandlers
@@ -23,9 +24,10 @@ namespace SbManager.InternalCommandHandlers
             _namespaceManager = namespaceManager;
         }
 
-        public void Execute(DeleteSubscriptionCommand command)
+        public Task Execute(DeleteSubscriptionCommand command)
         {
             _namespaceManager.DeleteSubscription(command.Topic, command.Path);
+            return Task.CompletedTask;
         }
     }
 }

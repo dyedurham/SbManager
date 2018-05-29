@@ -1,54 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.ServiceBus.Messaging;
+using System.Threading;
+using System.Threading.Tasks;
+using Mossharbor.AzureWorkArounds.ServiceBus;
 using SbManager.Models.ViewModels;
 
 namespace SbManager.BusHelpers
 {
     public interface IBusMonitor
     {
-        Overview GetOverview(bool fresh = false);
+        Task<Overview> GetOverview(bool fresh = false);
     }
     public class BusMonitor : IBusMonitor
     {
-        private readonly IConfig _config;
+        private readonly NamespaceManager _namespaceManager;
         private const long RefreshTime = 5000;
         private DateTime _lastTouch = new DateTime(1, 1, 1);
         private Overview _cached;
-        private readonly object _lock = new { };
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         public Func<DateTime> GetTime = () => DateTime.Now;
 
-        public BusMonitor(IConfig config)
+        public BusMonitor(NamespaceManager namespaceManager)
         {
-            _config = config;
+            _namespaceManager = namespaceManager;
         }
 
-        public Overview GetOverview(bool forceDirty = false)
+        public async Task<Overview> GetOverview(bool forceDirty = false)
         {
             if (!Dirty(forceDirty)) return _cached;
 
-            lock (_lock)
+            await _semaphore.WaitAsync();
+            try
             {
-                if (Dirty(forceDirty)) _cached = Fetch();
+                if (Dirty(forceDirty)) _cached = await Fetch();
+            }
+            finally
+            {
+                _semaphore.Release();
             }
 
             return _cached;
         }
 
-        private Overview Fetch()
+        private Task<Overview> Fetch()
         {
-            var manager = Microsoft.ServiceBus.NamespaceManager.CreateFromConnectionString(_config.BusConnectionString);
             var overview = new Overview
             {
-                Queues = manager.GetQueues().Select(e => new Queue
+                Queues = _namespaceManager.GetQueues().Select(e => new Queue
                 {
                     Status = e.Status.ToString(),
-                    ActiveMessageCount = e.MessageCountDetails.ActiveMessageCount,
-                    DeadLetterCount = e.MessageCountDetails.DeadLetterMessageCount,
-                    ScheduledMessageCount = e.MessageCountDetails.ScheduledMessageCount,
-                    TransferMessageCount = e.MessageCountDetails.TransferMessageCount,
-                    DeadTransferMessageCount = e.MessageCountDetails.TransferDeadLetterMessageCount,
+                    ActiveMessageCount = e.CountDetails.ActiveMessageCount,
+                    DeadLetterCount = e.CountDetails.DeadLetterMessageCount,
+                    ScheduledMessageCount = e.CountDetails.ScheduledMessageCount,
+                    TransferMessageCount = e.CountDetails.TransferMessageCount,
+                    DeadTransferMessageCount = e.CountDetails.TransferDeadLetterMessageCount,
                     SizeInBytes = e.SizeInBytes,
                     AutoDeleteOnIdle = new Time(e.AutoDeleteOnIdle),
                     DefaultMessageTTL = new Time(e.DefaultMessageTimeToLive),
@@ -59,7 +65,7 @@ namespace SbManager.BusHelpers
                     AccessedAt = e.AccessedAt,
                     Name = e.Path
                 }).ToList(),
-                Topics = manager.GetTopics().Select(e => new Topic
+                Topics = _namespaceManager.GetTopics().Select(e => new Topic
                 {
                     Status = e.Status.ToString(),
                     Name = e.Path,
@@ -69,30 +75,34 @@ namespace SbManager.BusHelpers
                     DuplicateDetectionWindow = new Time(e.DuplicateDetectionHistoryTimeWindow),
                     CreatedAt = e.CreatedAt,
                     UpdatedAt = e.UpdatedAt,
-                    AccessedAt = e.AccessedAt,
+                    //AccessedAt = e.AccessedAt,
                 }).ToList(),
             };
 
             foreach (var topic in overview.Topics)
             {
-                topic.Subscriptions = manager.GetSubscriptions(topic.Name).Select(e => new Subscription
+                topic.Subscriptions = _namespaceManager.GetSubscriptions(topic.Name).Select(e => new Subscription
                 {
                     Status = e.Status.ToString(),
                     Name = e.Name,
                     TopicName = topic.Name,
-                    ActiveMessageCount = e.MessageCountDetails.ActiveMessageCount,
-                    DeadLetterCount = e.MessageCountDetails.DeadLetterMessageCount,
-                    ScheduledMessageCount = e.MessageCountDetails.ScheduledMessageCount,
-                    TransferMessageCount = e.MessageCountDetails.TransferMessageCount,
-                    DeadTransferMessageCount = e.MessageCountDetails.TransferDeadLetterMessageCount,
+                    //ActiveMessageCount = e.CountDetails.ActiveMessageCount,
+                    //DeadLetterCount = e.CountDetails.DeadLetterMessageCount,
+                    //ScheduledMessageCount = e.CountDetails.ScheduledMessageCount,
+                    //TransferMessageCount = e.CountDetails.TransferMessageCount,
+                    //DeadTransferMessageCount = e.CountDetails.TransferDeadLetterMessageCount,
                     AutoDeleteOnIdle = new Time(e.AutoDeleteOnIdle),
                     DefaultMessageTTL = new Time(e.DefaultMessageTimeToLive),
                     LockDuration = new Time(e.LockDuration),
                     CreatedAt = e.CreatedAt,
                     UpdatedAt = e.UpdatedAt,
                     AccessedAt = e.AccessedAt,
-                    Rules = manager.GetRules(topic.Name, e.Name).Select(MapRule).ToList()
                 }).ToList();
+
+                foreach (var subscription in topic.Subscriptions)
+                {
+                    subscription.Rules = _namespaceManager.GetRules(topic.Name, subscription.Name).Select(MapRule).ToList();
+                }
 
                 topic.ActiveMessageCount = topic.Subscriptions.Sum(s => s.ActiveMessageCount);
                 topic.DeadLetterCount = topic.Subscriptions.Sum(s => s.DeadLetterCount);
@@ -108,7 +118,7 @@ namespace SbManager.BusHelpers
             overview.TotalActiveMessages = queueMessageCounts.ActiveMessageCount + topicMessageCounts.ActiveMessageCount;
             overview.TotalScheduledMessages = queueMessageCounts.ScheduledMessageCount + topicMessageCounts.ScheduledMessageCount;
 
-            return overview;
+            return Task.FromResult(overview);
         }
 
         private class MessageCounts

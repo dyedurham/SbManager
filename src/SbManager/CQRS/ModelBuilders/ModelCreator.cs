@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 
 namespace SbManager.CQRS.ModelBuilders
@@ -12,7 +13,7 @@ namespace SbManager.CQRS.ModelBuilders
             _lifetimeScope = lifetimeScope;
         }
 
-        public TModel Build<TModel>() where TModel : class
+        public Task<TModel> Build<TModel>() where TModel : class
         {
             var builder = _lifetimeScope.Resolve<IModelBuilder<TModel>>();
 
@@ -22,7 +23,7 @@ namespace SbManager.CQRS.ModelBuilders
             return model;
         }
 
-        public TModel Build<TModel, TCriteria>(TCriteria criteria)
+        public Task<TModel> Build<TModel, TCriteria>(TCriteria criteria)
             where TCriteria : class
             where TModel : class
         {

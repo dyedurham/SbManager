@@ -1,4 +1,5 @@
-﻿using SbManager.BusHelpers;
+﻿using System.Threading.Tasks;
+using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
 
 namespace SbManager.InternalCommandHandlers
@@ -29,12 +30,12 @@ namespace SbManager.InternalCommandHandlers
             _requeueAndRemove = requeueAndRemove;
         }
 
-        public void Execute(DeadLetterAllMessagesCommand command)
+        public async Task Execute(DeadLetterAllMessagesCommand command)
         {
             if (command.Queue != null)
-                _requeueAndRemove.KillAll(command.Queue);
+                await _requeueAndRemove.KillAll(command.Queue);
             else
-                _requeueAndRemove.KillAll(command.TopicName, command.Subscription);
+                await _requeueAndRemove.KillAll(command.TopicName, command.Subscription);
         }
     }
 }

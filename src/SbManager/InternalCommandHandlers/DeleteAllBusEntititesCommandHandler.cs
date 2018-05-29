@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Microsoft.ServiceBus;
+﻿using System.Threading.Tasks;
+using Mossharbor.AzureWorkArounds.ServiceBus;
 using SbManager.CQRS.Commands;
 
 namespace SbManager.InternalCommandHandlers
@@ -15,10 +15,11 @@ namespace SbManager.InternalCommandHandlers
             _namespaceManager = namespaceManager;
         }
 
-        public void Execute(DeleteAllBusEntititesCommand command)
+        public Task Execute(DeleteAllBusEntititesCommand command)
         {
-            foreach(var q in _namespaceManager.GetQueues().ToArray()) _namespaceManager.DeleteQueue(q.Path);
-            foreach(var t in _namespaceManager.GetTopics().ToArray()) _namespaceManager.DeleteTopic(t.Path);
+            foreach(var q in _namespaceManager.GetQueues()) _namespaceManager.DeleteQueue(q.Path);
+            foreach(var t in _namespaceManager.GetTopics()) _namespaceManager.DeleteTopic(t.Path);
+            return Task.CompletedTask;
         }
     }
 }
