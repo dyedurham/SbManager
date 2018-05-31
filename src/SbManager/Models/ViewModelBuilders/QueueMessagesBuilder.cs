@@ -56,7 +56,7 @@ namespace SbManager.Models.ViewModelBuilders
                 msg.ScheduledEnqueueTime = m.ScheduledEnqueueTimeUtc;
                 msg.ContentType = m.ContentType;
                 msg.DeliveryCount = m.SystemProperties.DeliveryCount;
-                msg.CustomProperties = m.UserProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.ToString());
+                msg.CustomProperties = m.UserProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value == null ? null : kvp.Value.ToString());
                 msg.Body = m.GetBodyString();
 
                 resp.Messages.Add(msg);

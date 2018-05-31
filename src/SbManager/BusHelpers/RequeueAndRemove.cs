@@ -5,7 +5,6 @@ using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using SbManager.Extensions;
 using BrokeredMessage = Microsoft.Azure.ServiceBus.Message;
-using static Microsoft.Azure.ServiceBus.EntityNameHelper;
 
 namespace SbManager.BusHelpers
 {
@@ -37,7 +36,7 @@ namespace SbManager.BusHelpers
 
         public async Task RequeueAll(string path)
         {
-            var receiver = _messagingFactory.CreateMessageReceiver(FormatDeadLetterPath(path));
+            var receiver = _messagingFactory.CreateMessageReceiver(EntityNameHelper.FormatDeadLetterPath(path));
             var sender = _messagingFactory.CreateMessageSender(path);
 
             // TODO: parallelize this loop?
@@ -57,7 +56,7 @@ namespace SbManager.BusHelpers
 
         public Task RequeueAll(string topicPath, string subscriptionName)
         {
-            return RequeueAll(FormatSubscriptionPath(topicPath, subscriptionName));
+            return RequeueAll(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName));
         }
 
         public async Task RequeueOne(string path, string messageId, string newBody)
@@ -87,7 +86,7 @@ namespace SbManager.BusHelpers
 
         public Task RequeueOne(string topicPath, string subscriptionName, string messageId, string newBody)
         {
-            return RequeueOne(FormatSubscriptionPath(topicPath, subscriptionName), messageId, newBody);
+            return RequeueOne(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName), messageId, newBody);
         }
 
         public Task RemoveAll(string path)
@@ -97,7 +96,7 @@ namespace SbManager.BusHelpers
 
         public Task RemoveAll(string topicPath, string subscriptionName)
         {
-            return RemoveAll(FormatSubscriptionPath(topicPath, subscriptionName));
+            return RemoveAll(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName));
         }
 
         public Task RemoveOne(string path, string messageId)
@@ -107,7 +106,7 @@ namespace SbManager.BusHelpers
 
         public Task RemoveOne(string topicPath, string subscriptionName, string messageId)
         {
-            return RemoveOne(FormatSubscriptionPath(topicPath, subscriptionName), messageId);
+            return RemoveOne(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName), messageId);
         }
 
         public Task KillAll(string path)
@@ -117,7 +116,7 @@ namespace SbManager.BusHelpers
 
         public Task KillAll(string topicPath, string subscriptionName)
         {
-            return KillAll(FormatSubscriptionPath(topicPath, subscriptionName));
+            return KillAll(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName));
         }
         
         public Task KillOne(string path, string messageId)
@@ -127,7 +126,7 @@ namespace SbManager.BusHelpers
 
         public Task KillOne(string topicPath, string subscriptionName, string messageId)
         {
-            return KillOne(FormatSubscriptionPath(topicPath, subscriptionName), messageId);
+            return KillOne(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName), messageId);
         }
 
         public virtual string[] GetPropertiesToRemove()

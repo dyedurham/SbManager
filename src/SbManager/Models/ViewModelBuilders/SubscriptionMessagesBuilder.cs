@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus;
 using SbManager.BusHelpers;
 using SbManager.Extensions;
 using SbManager.Models.ViewModels;
-using static Microsoft.Azure.ServiceBus.EntityNameHelper;
+using Message = SbManager.Models.ViewModels.Message;
 
 namespace SbManager.Models.ViewModelBuilders
 {
@@ -32,7 +33,7 @@ namespace SbManager.Models.ViewModelBuilders
 
         public async Task<MessageView> Build(FindSubscriptionMessages criteria)
         {
-            var receiver = _messagingFactory.CreateMessageReceiver(FormatSubscriptionPath(criteria.Topic, criteria.Path));
+            var receiver = _messagingFactory.CreateMessageReceiver(EntityNameHelper.FormatSubscriptionPath(criteria.Topic, criteria.Path));
             var resp = new MessageView();
             var msgs = await receiver.PeekAsync(criteria.Count);
 
@@ -59,7 +60,7 @@ namespace SbManager.Models.ViewModelBuilders
                 msg.ScheduledEnqueueTime = m.ScheduledEnqueueTimeUtc;
                 msg.ContentType = m.ContentType;
                 msg.DeliveryCount = m.SystemProperties.DeliveryCount;
-                msg.CustomProperties = m.UserProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.ToString());
+                msg.CustomProperties = m.UserProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value == null ? null : kvp.Value.ToString());
                 msg.Body = m.GetBodyString();
 
                 resp.Messages.Add(msg);
