@@ -32,7 +32,7 @@ namespace SbManager.Startup
                     .Enrich.FromLogContext()                    //Allow to add context values
                     .Enrich.WithProperty("RuntimeVersion", Environment.Version)
                     .WriteTo.FileSinkDefinedFromConfig()
-                    .WriteTo.LiterateConsole();
+                    .WriteTo.Console();
 
             Log.Logger = loggerConfiguration.CreateLogger();
 
