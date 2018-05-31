@@ -11,17 +11,6 @@
         {
             return pathname.Replace("/$DeadLetterQueue", "");
         }
-
-        public static string MakeDeadLetterPath(this string pathname)
-        {
-            return IsDeadLetterPath(pathname) ? pathname : pathname + "/$DeadLetterQueue";
-        }
-
-        public static bool IsDeadLetterPath(this string pathname)
-        {
-            return pathname.Contains("$DeadLetterQueue");
-        }
-
     }
 
     public static class To
