@@ -61,8 +61,8 @@ namespace SbManager.BusHelpers
 
         public async Task RequeueOne(string path, string messageId, string newBody)
         {
-            var receiver = _messagingFactory.CreateMessageReceiver(path);
-            var sender = _messagingFactory.CreateMessageSender(path);
+            var receiver = _messagingFactory.CreateMessageReceiver(path.RemoveDeadLetterPath());
+            var sender = _messagingFactory.CreateMessageSender(path.RemoveDeadLetterPath());
 
             // TODO: parallelize this loop
             Message msg;
