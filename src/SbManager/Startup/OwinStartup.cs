@@ -23,6 +23,8 @@ namespace SbManager.Startup
 
         public void Configuration(IAppBuilder app)
         {
+            app.UseErrorPage();
+            
             //For serving up static files
             foreach (var staticDirectory in Constants.StaticDirectories)
             {
@@ -40,7 +42,6 @@ namespace SbManager.Startup
 
             app.Use(SupportReponseTypeByContentType); 
             app.UseNancy(a => { a.Bootstrapper = _nancyBootstrapper; });
-            app.UseErrorPage();
         }
 
         public static Task SupportReponseTypeByContentType(IOwinContext context, Func<Task> next)
