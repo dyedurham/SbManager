@@ -20,6 +20,12 @@ $app.directive('loading', function () {
         templateUrl: window.applicationBasePath + '/Content/tmpl/directives/loading.html'
     };
 });
+$app.directive('error', function () {
+    return {
+        restrict: 'EA',
+        templateUrl: window.applicationBasePath + '/Content/tmpl/directives/error.html'
+    };
+});
 $app.directive('messagingentity',['messageTypeConstants', function (messageTypeConstants) {
     return {
         restrict: 'EA',

@@ -7,7 +7,9 @@
 
     <loading ng-if="!model"></loading>
 
-    <div ng-if="model">
+    <error ng-if="model.Error"></error>
+
+    <div ng-if="model && !model.Error">
         <div class="row status">
             <h2>Dashboard</h2>
             <queuelength active="{{model.TotalActiveMessages}}" dead="{{model.TotalDeadLetters}}" scheduled="{{model.TotalScheduledMessages}}" multiline="true" />

@@ -7,7 +7,9 @@
 
     <loading ng-if="!model"></loading>
 
-    <div ng-if="model">
+    <error ng-if="model.Error"></error>
+
+    <div ng-if="model && !model.Error">
         <div class="row">
             <div class="col-lg-6">
                 <h2>Queues</h2>
@@ -29,8 +31,8 @@
         <nav class="container">
             <ul class="nav navbar-nav" ng-if="model">
                 <li><button class="btn btn-success" ng-click="refresh()"><i class="glyphicon glyphicon-refresh btn-sm"></i> Refresh</button></li>
-                <li><button class="btn btn-danger" ng-click="deleteAllDeadLetters()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete all Dead Letters</button></li>
-                <li class="hidden-xs"><button class="btn btn-danger" ng-click="deleteAll()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete all</button></li>
+                <li ng-if="!model.Error"><button class="btn btn-danger" ng-click="deleteAllDeadLetters()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete all Dead Letters</button></li>
+                <li ng-if="!model.Error" class="hidden-xs"><button class="btn btn-danger" ng-click="deleteAll()"><i class="glyphicon glyphicon-remove btn-sm"></i> Delete all</button></li>
             </ul>
         </nav>
     </div>

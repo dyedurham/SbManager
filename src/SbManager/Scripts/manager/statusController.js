@@ -8,12 +8,7 @@
             $scope.time = currentTime.getHours() + ":" + ('0' + currentTime.getMinutes()).slice(-2);
         })
         .catch(function (jqXHR) {
-            if (jqXHR.data == "") {
-                alert("Undefined Error");
-            } else {
-                var err = jqXHR.data;
-                alert("ERROR " + err.StatusCode + ": " + err.Message);
-            } 
+            $scope.model = {Error: jqXHR.data};
         });
     };
     $scope.refresh();
