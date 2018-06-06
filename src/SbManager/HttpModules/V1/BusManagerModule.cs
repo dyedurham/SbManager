@@ -42,7 +42,7 @@ namespace SbManager.HttpModules.V1
             Get["/queue/{qid}", true] =
                 async (_, ct) => await _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(To.String((object)_.qid)));
             Get["/topic/{tid}/{sid}", true] =
-                async (_, ct) => await _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(To.String((object)_.tid), To.String((object)_.sid), true));
+                async (_, ct) => await _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(To.String((object)_.tid), To.String((object)_.sid)));
             Get["queue/{qid}/messages/{count}", true] =
                 async (_, ct) => await _modelCreator.Build<MessageView, FindQueuedMessages>(new FindQueuedMessages(To.String((object)_.qid).UnescapePathName(), To.Int(_.count)));
             Get["topic/{tid}/{sid}/messages/{count}", true] =
@@ -51,27 +51,27 @@ namespace SbManager.HttpModules.V1
             {
                 var qid = To.String((object)_.qid).UnescapePathName();
                 await _requeueAndRemove.RequeueAll(qid);
-                return _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(qid.RemoveDeadLetterPath(), true));
+                return _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(qid.RemoveDeadLetterPath()));
             };
             Post["/topic/{tid}/{sid}/requeue/all", true] = async (_, ct) =>
             {
                 var tid = To.String((object)_.tid);
                 var sid = To.String((object)_.sid).UnescapePathName();
                 await _requeueAndRemove.RequeueAll(tid, sid);
-                return _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(tid, sid.RemoveDeadLetterPath(), true));
+                return _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(tid, sid.RemoveDeadLetterPath()));
             };
             Post["/queue/{qid}/remove/all", true] = async (_, ct) =>
             {
                 var qid = To.String((object)_.qid).UnescapePathName();
                 await _requeueAndRemove.RemoveAll(qid);
-                return _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(qid.RemoveDeadLetterPath(), true));
+                return _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(qid.RemoveDeadLetterPath()));
             };
             Post["/topic/{tid}/{sid}/remove/all", true] = async (_, ct) =>
             {
                 var tid = To.String((object)_.tid);
                 var sid = To.String((object)_.sid).UnescapePathName();
                 await _requeueAndRemove.RemoveAll(tid, sid);
-                return _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(tid, sid.RemoveDeadLetterPath(), true));
+                return _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(tid, sid.RemoveDeadLetterPath()));
             };
             Post["queue/{qid}/delete", true] =
                 async (_, ct) => {
@@ -99,7 +99,7 @@ namespace SbManager.HttpModules.V1
                 async (_, ct) =>
                 {
                     await _commandSender.Send(new DeadLetterAllMessagesCommand(To.String((object)_.qid).UnescapePathName()));
-                    return _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(To.String((object)_.qid).RemoveDeadLetterPath(), true));
+                    return _modelCreator.Build<Queue, QueueCriteria>(new QueueCriteria(To.String((object)_.qid).RemoveDeadLetterPath()));
                 };
             Post["queue/{qid}/requeue", true] =
                 async (_, ct) => { await _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId, To.String((object)_.qid).UnescapePathName())); return new { success = true }; };
@@ -113,7 +113,7 @@ namespace SbManager.HttpModules.V1
                 async (_, ct) =>
                 {
                     await _commandSender.Send(new DeadLetterAllMessagesCommand(To.String((object)_.tid), To.String((object)_.sid).UnescapePathName()));
-                    return _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(To.String((object)_.tid), To.String((object)_.sid).UnescapePathName(), true));
+                    return _modelCreator.Build<Subscription, SubscriptionCriteria>(new SubscriptionCriteria(To.String((object)_.tid), To.String((object)_.sid).UnescapePathName()));
                 };
             Post["topic/{tid}/{sid}/requeue", true] =
                 async (_, ct) => { await _commandSender.Send(new RequeueMessageCommand(Request.Form.messageId,To.String( _.tid), To.String((object)_.sid).UnescapePathName())); return new { success = true }; };
