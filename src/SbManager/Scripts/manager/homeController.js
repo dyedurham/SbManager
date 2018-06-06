@@ -9,12 +9,7 @@
             $scope.topicsWithDeadlettersCount = d.data.Topics.reduce((c, t) => c + (t.DeadLetterCount ? 1 : 0), 0);
         })
         .catch(function (jqXHR) {
-            if (jqXHR.data == "") {
-                $log.error("Undefined Error");
-            } else {
-                var err = jqXHR.data;
-                $log.error(err.StatusCode + ": " + err.Message);
-            }
+            $scope.model = {Error: jqXHR.data};
         });
     };
     $scope.refresh();
