@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
-using Microsoft.Owin.Cors;
 using Nancy.Bootstrapper;
 using Owin;
 
@@ -30,15 +28,6 @@ namespace SbManager.Startup
             {
                 app.UseStaticFiles(staticDirectory);
             }
-
-            app.Map("/signalr", map =>
-            {
-                var config = new HubConfiguration();
-
-                // Turns cors support on allowing everything
-                // In real applications, the origins should be locked down
-                map.UseCors(CorsOptions.AllowAll).RunSignalR(config);
-            });
 
             app.Use(SupportReponseTypeByContentType); 
             app.UseNancy(a => { a.Bootstrapper = _nancyBootstrapper; });
