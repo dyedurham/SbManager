@@ -5,7 +5,7 @@ Installable web ui for managing Azure Service Bus (ASB) and Service Bus for Wind
 
 ## Overview
 
-SbManager is an app that is installable as a Windows Service (using Topshelf) that allows a level of visibility and maintenence on top of ASB and SBWS. It started life as a project internal to GlobalX Legal Solutions (http://www.globalx.com.au), but is was open-sourced as there was a general feeling that such a tool would be beneficial to the community at large.
+SbManager is an app that is installable as a Windows Service (using Topshelf) that allows a level of visibility and maintenence on top of ASB and SBWS. It started life as a project internal to GlobalX (http://www.globalx.com.au), but is was open-sourced as there was a general feeling that such a tool would be beneficial to the community at large.
 
 While there is already a pretty good tool for doing the things SbManager does, SbManager was created due to the following deficiencies in that existing software:
 
@@ -53,6 +53,9 @@ Some software can't adequately set HTTP Headers. When consuming the API using su
 
 ## Security
 There are currently NO security features. This is something required, inevitably, for proper use in production scenarios, but for now it does not exist. If you have great ideas on achieving this cleanly, start the discussion.
+
+## Windows Service Bus and Azure Service Bus Support
+Please note that Windows Service Bus is dead and that support for it is deprecated. It will be removed in a future version.
 
 ## Contributing
 We'd love everyone and anyone to contribute!
