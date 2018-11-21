@@ -1,4 +1,5 @@
-﻿using Microsoft.ServiceBus.Messaging;
+﻿using System.Text;
+using Microsoft.Azure.ServiceBus;
 using NUnit.Framework;
 using SbManager.Extensions;
 using Shouldly;
@@ -9,7 +10,7 @@ namespace SbManager.Tests.Extensions
     [TestFixture]
     public class BrokeredMessageExtensionsTests
     {
-        private BrokeredMessage _message;
+        private Message _message;
         private string _messageBody;
 
         [Test]
@@ -42,19 +43,19 @@ namespace SbManager.Tests.Extensions
 
         void GivenABrokeredMessageWithProperties(params string[] properties)
         {
-            _message = new BrokeredMessage(new TestMessage());
+            _message = new Message(new byte[0]);
             foreach (var property in properties)
             {
-                _message.Properties.Add(property, "test");
+                _message.UserProperties.Add(property, "test");
             }
         }
         void GivenABrokeredMessageWithBody(string testdata)
         {
-            _message = new BrokeredMessage(new TestMessage { Test = testdata });
+            _message = new Message(Encoding.UTF8.GetBytes(testdata));
         }
         void GivenABrokeredMessageWithNoBody()
         {
-            _message = new BrokeredMessage(null);
+            _message = new Message(null);
         }
         void WhenRemovingProperties(params string[] properties)
         {
@@ -66,11 +67,11 @@ namespace SbManager.Tests.Extensions
         }
         void ThenItShouldHaveRemovedTheSpecifiedProperties(params string[] removed)
         {
-            foreach (var rem in removed) _message.Properties.ContainsKey(rem).ShouldBe(false);
+            foreach (var rem in removed) _message.UserProperties.ContainsKey(rem).ShouldBe(false);
         }
         void ThenItShouldHaveKeptTheOtherProperties(params string[] remaining)
         {
-            foreach (var rem in remaining) _message.Properties.ContainsKey(rem).ShouldBe(true);
+            foreach (var rem in remaining) _message.UserProperties.ContainsKey(rem).ShouldBe(true);
         }
         void ThenTheBodyStringShouldBe(string expected)
         {

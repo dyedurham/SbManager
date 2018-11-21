@@ -1,4 +1,5 @@
-﻿using SbManager.BusHelpers;
+﻿using System.Threading.Tasks;
+using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
 
 namespace SbManager.InternalCommandHandlers
@@ -13,9 +14,9 @@ namespace SbManager.InternalCommandHandlers
         {
             _busMonitor = busMonitor;
         }
-        public void Execute(RefreshCachedOverviewCommand command)
+        public async Task Execute(RefreshCachedOverviewCommand command)
         {
-            _busMonitor.GetOverview(true);
+            await _busMonitor.GetOverview(true);
         }
     }
 }

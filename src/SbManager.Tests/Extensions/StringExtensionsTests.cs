@@ -10,7 +10,6 @@ namespace SbManager.Tests.Extensions
     {
         private string _str;
         private string _result;
-        private bool _isDeadLetter;
 
         [Test]
         public void CanUnescapePathName()
@@ -37,42 +36,6 @@ namespace SbManager.Tests.Extensions
                 .BDDfy();
         }
 
-        [Test]
-        public void CanMakeDeadLetterPath()
-        {
-            this.Given(x => x.GivenAString("abc"))
-                .When(x => x.WhenMakingDeadLetterPath())
-                .Then(x => x.ThenTheResultShouldEqual("abc/$DeadLetterQueue"))
-                .BDDfy();
-        }
-
-        [Test]
-        public void CanCorrectlyMakeDeadLetterPathWhenAlreadyDeadLetterPath()
-        {
-            this.Given(x => x.GivenAString("abc/$DeadLetterQueue"))
-                .When(x => x.WhenMakingDeadLetterPath())
-                .Then(x => x.ThenTheResultShouldEqual("abc/$DeadLetterQueue"))
-                .BDDfy();
-        }
-
-        [Test]
-        public void CanDetectDeadLetterPath()
-        {
-            this.Given(x => x.GivenAString("abc/$DeadLetterQueue"))
-                .When(x => x.WhenCheckingIsDeadLetterPath())
-                .Then(x => x.ThenTheFlagShouldBe(true))
-                .BDDfy();
-        }
-
-        [Test]
-        public void CanDetectNonDeadLetterPath()
-        {
-            this.Given(x => x.GivenAString("abc"))
-                .When(x => x.WhenCheckingIsDeadLetterPath())
-                .Then(x => x.ThenTheFlagShouldBe(false))
-                .BDDfy();
-        }
-
         void GivenAString(string str)
         {
             _str = str;
@@ -87,24 +50,10 @@ namespace SbManager.Tests.Extensions
         {
             _result = _str.RemoveDeadLetterPath();
         }
-        void WhenMakingDeadLetterPath()
-        {
-            _result = _str.MakeDeadLetterPath();
-        }
-
-        void WhenCheckingIsDeadLetterPath()
-        {
-            _isDeadLetter = _str.IsDeadLetterPath();
-        }
 
         void ThenTheResultShouldEqual(string res)
         {
             _result.ShouldBe(res);
-        }
-
-        void ThenTheFlagShouldBe(bool flag)
-        {
-            _isDeadLetter.ShouldBe(flag);
         }
     }
 }

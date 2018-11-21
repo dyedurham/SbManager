@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using System.Net;
+﻿using System.Net;
 using RestSharp;
 using Shouldly;
 
@@ -13,7 +12,7 @@ namespace SbManager.IntegrationTests
 
         protected void GivenARestClient()
         {
-            Rest = new RestClient(ConfigurationManager.AppSettings["BaseServiceUrl"]) { FollowRedirects = false };
+            Rest = new RestClient("http://localhost:8062") { FollowRedirects = false };
         }
 
         protected void GivenAGetRequest(string path)

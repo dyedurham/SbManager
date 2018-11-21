@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using SbManager.BusHelpers;
@@ -24,7 +25,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverview(false))
-                .When(x => x.WhenBuildingModel("testtopic", "testsubscription", false))
+                .When(x => x.WhenBuildingModel("testtopic", "testsubscription"))
                 .Then(x => x.ThenTheSubscriptionIsReturned())
                 .Then(x => x.ThenThereShouldBeNoException())
                 .BDDfy();
@@ -35,7 +36,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverview(false))
-                .When(x => x.WhenBuildingModel("testtopic", "testSuBscription", false))
+                .When(x => x.WhenBuildingModel("testtopic", "testSuBscription"))
                 .Then(x => x.ThenTheSubscriptionIsReturned())
                 .Then(x => x.ThenThereShouldBeNoException())
                 .BDDfy();
@@ -46,7 +47,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverview(true))
-                .When(x => x.WhenBuildingModel("testtopic", "testsubscription", true))
+                .When(x => x.WhenBuildingModel("testtopic", "testsubscription"))
                 .Then(x => x.ThenTheSubscriptionIsReturned())
                 .Then(x => x.ThenThereShouldBeNoException())
                 .BDDfy();
@@ -57,7 +58,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverviewWithDuplicateSubscriptions())
-                .When(x => x.WhenBuildingModel("testtopic", "testsubscription", false))
+                .When(x => x.WhenBuildingModel("testtopic", "testsubscription"))
                 .Then(x => x.ThenThereShouldBeAnException())
                 .BDDfy();
         }
@@ -95,11 +96,11 @@ namespace SbManager.Tests.Models.ViewModelBuilders
             _busMonitor.GetOverview().Returns(overview);
         }
 
-        void WhenBuildingModel(string topicname, string subscriptionname, bool forceFresh)
+        async Task WhenBuildingModel(string topicname, string subscriptionname)
         {
             try
             {
-                _result = _builder.Build(new SubscriptionCriteria(topicname, subscriptionname, forceFresh));
+                _result = await _builder.Build(new SubscriptionCriteria(topicname, subscriptionname));
             }
             catch (Exception ex)
             {

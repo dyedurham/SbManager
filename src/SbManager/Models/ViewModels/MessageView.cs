@@ -26,14 +26,12 @@ namespace SbManager.Models.ViewModels
 
         public string ContentType { get; set; }
         public int DeliveryCount { get; set; }
-        public bool IsBodyConsumed { get; set; }
         public DateTime LockedUntil { get; set; }
         public string LockToken { get; set; }
         public string ReplyTo { get; set; }
         public string ReplyToSessionId { get; set; }
         public DateTime ScheduledEnqueueTime { get; set; }
         public string SessionId { get; set; }
-        public string State { get; set; }
         public TimeSpan TimeToLive { get; set; }
         public string To { get; set; }
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using SbManager.BusHelpers;
@@ -39,9 +40,9 @@ namespace SbManager.Tests.Models.ViewModelBuilders
             _busMonitor.GetOverview().Returns(_expected);
         }
 
-        void WhenBuildingModel()
+        async Task WhenBuildingModel()
         {
-            _result = _builder.Build();
+            _result = await _builder.Build();
         }
 
         void ThenTheOverviewIsReturned()

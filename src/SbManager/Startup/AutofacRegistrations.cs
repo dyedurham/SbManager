@@ -1,7 +1,6 @@
 ﻿using System;
 using Autofac;
-using Microsoft.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
+using Mossharbor.AzureWorkArounds.ServiceBus;
 using Nancy.Bootstrapper;
 using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
@@ -33,7 +32,7 @@ namespace SbManager.Startup
                     .Enrich.FromLogContext()                    //Allow to add context values
                     .Enrich.WithProperty("RuntimeVersion", Environment.Version)
                     .WriteTo.FileSinkDefinedFromConfig()
-                    .WriteTo.LiterateConsole();
+                    .WriteTo.Console();
 
             Log.Logger = loggerConfiguration.CreateLogger();
 
