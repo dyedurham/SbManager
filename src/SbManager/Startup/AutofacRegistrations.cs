@@ -1,6 +1,6 @@
 ﻿using System;
 using Autofac;
-using Mossharbor.AzureWorkArounds.ServiceBus;
+using Microsoft.Azure.ServiceBus.Management;
 using Nancy.Bootstrapper;
 using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
@@ -42,7 +42,7 @@ namespace SbManager.Startup
             builder.RegisterType<BusMonitor>().As<IBusMonitor>().SingleInstance();
             builder.RegisterType<Sender>().As<ISender>().SingleInstance();
 
-            builder.Register(c => NamespaceManager.CreateFromConnectionString(c.Resolve<IConfig>().BusConnectionString)).As<NamespaceManager>();
+            builder.Register(c => new ManagementClient(c.Resolve<IConfig>().BusConnectionString)).As<ManagementClient>();
             builder.Register(c => MessagingFactory.CreateFromConnectionString(c.Resolve<IConfig>().BusConnectionString)).As<MessagingFactory>();
 
             builder.RegisterType<BusManagerModule>().AsSelf().AsImplementedInterfaces();

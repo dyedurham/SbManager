@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using Mossharbor.AzureWorkArounds.ServiceBus;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus.Management;
 using SbManager.CQRS.Commands;
 
 namespace SbManager.InternalCommandHandlers
@@ -8,18 +9,18 @@ namespace SbManager.InternalCommandHandlers
 
     public class DeleteAllBusEntititesCommandHandler : CQRS.Commands.ICommandHandler<DeleteAllBusEntititesCommand>
     {
-        private readonly NamespaceManager _namespaceManager;
+        private readonly ManagementClient _managementClient;
 
-        public DeleteAllBusEntititesCommandHandler(NamespaceManager namespaceManager)
+        public DeleteAllBusEntititesCommandHandler(ManagementClient managementClient)
         {
-            _namespaceManager = namespaceManager;
+            _managementClient = managementClient;
         }
 
-        public Task Execute(DeleteAllBusEntititesCommand command)
+        public async Task Execute(DeleteAllBusEntititesCommand command)
         {
-            foreach(var q in _namespaceManager.GetQueues()) _namespaceManager.DeleteQueue(q.Path);
-            foreach(var t in _namespaceManager.GetTopics()) _namespaceManager.DeleteTopic(t.Path);
-            return Task.CompletedTask;
+            var deleteQueuesTasks = (await _managementClient.GetQueuesAsync()).Select(e => _managementClient.DeleteQueueAsync(e.Path));
+            var deleteTopicsTasks = (await _managementClient.GetTopicsAsync()).Select(e => _managementClient.DeleteTopicAsync(e.Path));
+            await Task.WhenAll(deleteQueuesTasks.Concat(deleteTopicsTasks));
         }
     }
 }

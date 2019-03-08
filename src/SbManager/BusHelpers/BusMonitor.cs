@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Mossharbor.AzureWorkArounds.ServiceBus;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Management;
 using SbManager.Models.ViewModels;
 
 namespace SbManager.BusHelpers
@@ -17,16 +18,16 @@ namespace SbManager.BusHelpers
     }
     public class BusMonitor : IBusMonitor
     {
-        private readonly NamespaceManager _namespaceManager;
+        private readonly ManagementClient _managementClient;
         private const long RefreshTime = 5000;
         private DateTime _lastTouch = new DateTime(1, 1, 1);
         private Overview _cached;
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         public Func<DateTime> GetTime = () => DateTime.Now;
 
-        public BusMonitor(NamespaceManager namespaceManager)
+        public BusMonitor(ManagementClient managementClient)
         {
-            _namespaceManager = namespaceManager;
+            _managementClient = managementClient;
         }
 
         public async Task<Overview> GetOverview(bool forceDirty = false)
@@ -46,34 +47,42 @@ namespace SbManager.BusHelpers
             return _cached;
         }
 
-        public Task<Queue> GetQueue(string queueName)
+        public async Task<Queue> GetQueue(string queueName)
         {
-            var queue = MapQueue(_namespaceManager.GetQueue(queueName));
-            return Task.FromResult(queue);
+            var queueDescription = await _managementClient.GetQueueAsync(queueName);
+            var queueInfo = await _managementClient.GetQueueRuntimeInfoAsync(queueName);
+            var queue = MapQueue(queueDescription, queueInfo);
+            return queue;
         }
 
-        public Task<Topic> GetTopic(string topicName)
+        public async Task<Topic> GetTopic(string topicName)
         {
-            var topic = MapTopic(_namespaceManager.GetTopic(topicName));
-            FillTopic(topic);
-            return Task.FromResult(topic);
+            var topicDescription = await _managementClient.GetTopicAsync(topicName);
+            var topicInfo = await _managementClient.GetTopicRuntimeInfoAsync(topicName);
+            var topic = MapTopic(topicDescription, topicInfo);
+            await FillTopic(topic);
+            return topic;
         }
 
-        public Task<Subscription> GetSubscription(string topicName, string subscriptionName)
+        public async Task<Subscription> GetSubscription(string topicName, string subscriptionName)
         {
-            var subscription = MapSubscription(topicName, _namespaceManager.GetSubscription(topicName, subscriptionName));
-            FillSubscription(subscription, topicName);
-            return Task.FromResult(subscription);
+            var subscriptionDescription = await _managementClient.GetSubscriptionAsync(topicName, subscriptionName);
+            var subscriptionInfo = await _managementClient.GetSubscriptionRuntimeInfoAsync(topicName, subscriptionName);
+            var subscription = MapSubscription(topicName, subscriptionDescription, subscriptionInfo);
+            await FillSubscription(subscription, topicName);
+            return subscription;
         }
 
-        private void FillTopic(Topic topic)
+        private async Task FillTopic(Topic topic)
         {
-            topic.Subscriptions = _namespaceManager.GetSubscriptions(topic.Name).Select(e => MapSubscription(topic.Name, e)).ToList();
+            var subscriptions = await _managementClient.GetSubscriptionsAsync(topic.Name);
+            var subscriptionsRuntimeInfoTasks = subscriptions.Select(e => _managementClient.GetSubscriptionRuntimeInfoAsync(topic.Name, e.SubscriptionName)).ToList();
+            await Task.WhenAll(subscriptionsRuntimeInfoTasks);
+            var subscriptionsRuntimeInfos = subscriptionsRuntimeInfoTasks.Select(e => e.Result);
+            
+            topic.Subscriptions = subscriptionsRuntimeInfos.Select(e => MapSubscription(topic.Name, subscriptions.Single(s => s.SubscriptionName == e.SubscriptionName), e)).ToList();
 
-            foreach (var subscription in topic.Subscriptions)
-            {
-                FillSubscription(subscription, topic.Name);
-            }
+            await Task.WhenAll(topic.Subscriptions.Select(e => FillSubscription(e, topic.Name)));
 
             topic.ActiveMessageCount = topic.Subscriptions.Sum(s => s.ActiveMessageCount);
             topic.DeadLetterCount = topic.Subscriptions.Sum(s => s.DeadLetterCount);
@@ -82,23 +91,30 @@ namespace SbManager.BusHelpers
             topic.DeadTransferMessageCount = topic.Subscriptions.Sum(s => s.DeadTransferMessageCount);
         }
 
-        private void FillSubscription(Subscription subscription, string topicName)
+        private async Task FillSubscription(Subscription subscription, string topicName)
         {
-            subscription.Rules = _namespaceManager.GetRules(topicName, subscription.Name).Select(MapRule).ToList();
+            subscription.Rules = (await _managementClient.GetRulesAsync(topicName, subscription.Name)).Select(MapRule).ToList();
         }
 
-        private Task<Overview> Fetch()
+        private async Task<Overview> Fetch()
         {
+            var queues = await _managementClient.GetQueuesAsync();
+            var queuesRuntimeInfoTasks = queues.Select(e => _managementClient.GetQueueRuntimeInfoAsync(e.Path)).ToList();
+            await Task.WhenAll(queuesRuntimeInfoTasks);
+            var queueRuntimeInfos = queuesRuntimeInfoTasks.Select(e => e.Result);
+
+            var topics = await _managementClient.GetTopicsAsync();
+            var topicsRuntimeInfoTasks = topics.Select(e => _managementClient.GetTopicRuntimeInfoAsync(e.Path)).ToList();
+            await Task.WhenAll(topicsRuntimeInfoTasks);
+            var topicsRuntimeInfos = topicsRuntimeInfoTasks.Select(e => e.Result);
+            
             var overview = new Overview
             {
-                Queues = _namespaceManager.GetQueues().Select(MapQueue).ToList(),
-                Topics = _namespaceManager.GetTopics().Select(MapTopic).ToList()
+                Queues = queueRuntimeInfos.Select(e => MapQueue(queues.Single(q => q.Path == e.Path), e)).ToList(),
+                Topics = topicsRuntimeInfos.Select(e => MapTopic(topics.Single(t => t.Path == e.Path), e)).ToList()
             };
 
-            foreach (var topic in overview.Topics)
-            {
-                FillTopic(topic);
-            }
+            await Task.WhenAll(overview.Topics.Select(FillTopic));
 
             var queueMessageCounts = GetCounts(overview.Queues);
             var topicMessageCounts = GetCounts(overview.Topics);
@@ -107,7 +123,7 @@ namespace SbManager.BusHelpers
             overview.TotalActiveMessages = queueMessageCounts.ActiveMessageCount + topicMessageCounts.ActiveMessageCount;
             overview.TotalScheduledMessages = queueMessageCounts.ScheduledMessageCount + topicMessageCounts.ScheduledMessageCount;
 
-            return Task.FromResult(overview);
+            return overview;
         }
 
         private class MessageCounts
@@ -134,62 +150,62 @@ namespace SbManager.BusHelpers
             return forceDirty || (GetTime() > _lastTouch.AddMilliseconds(RefreshTime));
         }
 
-        private static Queue MapQueue(QueueDescription queue)
+        private static Queue MapQueue(QueueDescription queueDescription, QueueRuntimeInfo queueInfo)
         {
             return new Queue
             {
-                Status = queue.Status.ToString(),
-                ActiveMessageCount = queue.CountDetails.ActiveMessageCount,
-                DeadLetterCount = queue.CountDetails.DeadLetterMessageCount,
-                ScheduledMessageCount = queue.CountDetails.ScheduledMessageCount,
-                TransferMessageCount = queue.CountDetails.TransferMessageCount,
-                DeadTransferMessageCount = queue.CountDetails.TransferDeadLetterMessageCount,
-                SizeInBytes = queue.SizeInBytes,
-                AutoDeleteOnIdle = new Time(queue.AutoDeleteOnIdle),
-                DefaultMessageTTL = new Time(queue.DefaultMessageTimeToLive),
-                DuplicateDetectionWindow = new Time(queue.DuplicateDetectionHistoryTimeWindow),
-                LockDuration = new Time(queue.LockDuration),
-                CreatedAt = queue.CreatedAt,
-                UpdatedAt = queue.UpdatedAt,
-                AccessedAt = queue.AccessedAt,
-                Name = queue.Path
+                Status = queueDescription.Status.ToString(),
+                ActiveMessageCount = queueInfo.MessageCountDetails.ActiveMessageCount,
+                DeadLetterCount = queueInfo.MessageCountDetails.DeadLetterMessageCount,
+                ScheduledMessageCount = queueInfo.MessageCountDetails.ScheduledMessageCount,
+                TransferMessageCount = queueInfo.MessageCountDetails.TransferMessageCount,
+                DeadTransferMessageCount = queueInfo.MessageCountDetails.TransferDeadLetterMessageCount,
+                SizeInBytes = queueInfo.SizeInBytes,
+                AutoDeleteOnIdle = new Time(queueDescription.AutoDeleteOnIdle),
+                DefaultMessageTTL = new Time(queueDescription.DefaultMessageTimeToLive),
+                DuplicateDetectionWindow = new Time(queueDescription.DuplicateDetectionHistoryTimeWindow),
+                LockDuration = new Time(queueDescription.LockDuration),
+                CreatedAt = queueInfo.CreatedAt,
+                UpdatedAt = queueInfo.UpdatedAt,
+                AccessedAt = queueInfo.AccessedAt,
+                Name = queueDescription.Path
             };
         }
 
-        private static Topic MapTopic(TopicDescription topic)
+        private static Topic MapTopic(TopicDescription topicDescription, TopicRuntimeInfo topicInfo)
         {
             return new Topic
             {
-                Status = topic.Status.ToString(),
-                Name = topic.Path,
-                SizeInBytes = topic.SizeInBytes,
-                AutoDeleteOnIdle = new Time(topic.AutoDeleteOnIdle),
-                DefaultMessageTTL = new Time(topic.DefaultMessageTimeToLive),
-                DuplicateDetectionWindow = new Time(topic.DuplicateDetectionHistoryTimeWindow),
-                CreatedAt = topic.CreatedAt,
-                UpdatedAt = topic.UpdatedAt,
-                //AccessedAt = topic.AccessedAt,
+                Status = topicDescription.Status.ToString(),
+                Name = topicDescription.Path,
+                SizeInBytes = topicInfo.SizeInBytes,
+                AutoDeleteOnIdle = new Time(topicDescription.AutoDeleteOnIdle),
+                DefaultMessageTTL = new Time(topicDescription.DefaultMessageTimeToLive),
+                DuplicateDetectionWindow = new Time(topicDescription.DuplicateDetectionHistoryTimeWindow),
+                CreatedAt = topicInfo.CreatedAt,
+                UpdatedAt = topicInfo.UpdatedAt,
+                AccessedAt = topicInfo.AccessedAt,
             };
         }
         
-        private static Subscription MapSubscription(string topicName, SubscriptionDescription subscription)
+        private static Subscription MapSubscription(string topicName, SubscriptionDescription subscriptionDescription, SubscriptionRuntimeInfo subscriptionInfo)
         {
             return new Subscription
             {
-                Status = subscription.Status.ToString(),
-                Name = subscription.Name,
+                Status = subscriptionDescription.Status.ToString(),
+                Name = subscriptionDescription.SubscriptionName,
                 TopicName = topicName,
-                ActiveMessageCount = subscription.CountDetails.ActiveMessageCount,
-                DeadLetterCount = subscription.CountDetails.DeadLetterMessageCount,
-                ScheduledMessageCount = subscription.CountDetails.ScheduledMessageCount,
-                TransferMessageCount = subscription.CountDetails.TransferMessageCount,
-                DeadTransferMessageCount = subscription.CountDetails.TransferDeadLetterMessageCount,
-                AutoDeleteOnIdle = new Time(subscription.AutoDeleteOnIdle),
-                DefaultMessageTTL = new Time(subscription.DefaultMessageTimeToLive),
-                LockDuration = new Time(subscription.LockDuration),
-                CreatedAt = subscription.CreatedAt,
-                UpdatedAt = subscription.UpdatedAt,
-                AccessedAt = subscription.AccessedAt,
+                ActiveMessageCount = subscriptionInfo.MessageCountDetails.ActiveMessageCount,
+                DeadLetterCount = subscriptionInfo.MessageCountDetails.DeadLetterMessageCount,
+                ScheduledMessageCount = subscriptionInfo.MessageCountDetails.ScheduledMessageCount,
+                TransferMessageCount = subscriptionInfo.MessageCountDetails.TransferMessageCount,
+                DeadTransferMessageCount = subscriptionInfo.MessageCountDetails.TransferDeadLetterMessageCount,
+                AutoDeleteOnIdle = new Time(subscriptionDescription.AutoDeleteOnIdle),
+                DefaultMessageTTL = new Time(subscriptionDescription.DefaultMessageTimeToLive),
+                LockDuration = new Time(subscriptionDescription.LockDuration),
+                CreatedAt = subscriptionInfo.CreatedAt,
+                UpdatedAt = subscriptionInfo.UpdatedAt,
+                AccessedAt = subscriptionInfo.AccessedAt,
             };
         }
 
@@ -202,7 +218,7 @@ namespace SbManager.BusHelpers
                     Name = r.Name,
                     FilterType = "SqlFilter",
                     Text = (r.Filter as SqlFilter).SqlExpression,
-                    CreatedAt = r.CreatedAt
+                    //CreatedAt = r.CreatedAt
                 };
             }
             if (r.Filter is CorrelationFilter)
@@ -212,13 +228,13 @@ namespace SbManager.BusHelpers
                     Name = r.Name,
                     FilterType = "CorrelationFilter",
                     Text = "TODO",
-                    CreatedAt = r.CreatedAt
+                    //CreatedAt = r.CreatedAt
                 };
             }
             return new Rule
             {
                 Name = r.Name,
-                CreatedAt = r.CreatedAt,
+                //CreatedAt = r.CreatedAt,
                 Text = "Unknown",
                 FilterType = "UnknownFilterType"
             };
