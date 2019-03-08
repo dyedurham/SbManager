@@ -21,7 +21,6 @@ namespace SbManager.Startup
         {
             //Register components here
             builder.RegisterType<Service>().As<IService>();
-            builder.RegisterType<WindowsService>().As<ServiceControl>();
             builder.RegisterType<OwinStartup>().As<IOwinStartup>();
             builder.RegisterType<NancyBootstrapper>().As<INancyBootstrapper>();
 
