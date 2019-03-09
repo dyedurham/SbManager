@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using SbManager.BusHelpers;
 using SbManager.CQRS.ModelBuilders;
 using SbManager.Models.ViewModels;
@@ -16,9 +17,9 @@ namespace SbManager.Models.ViewModelBuilders
             _busMonitor = busMonitor;
         }
 
-        public DeadletterView Build()
+        public async Task<DeadletterView> Build()
         {
-            var overview = _busMonitor.GetOverview(true);
+            var overview = await _busMonitor.GetOverview(true);
             var deadletterQueues = overview.Queues.Where(q => q.DeadLetterCount > 0)
                 .Select(q => new Deadletter
                 {

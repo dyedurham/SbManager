@@ -1,265 +1,132 @@
 ﻿using System;
-using System.IO;
 using System.Text;
-using Microsoft.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
+using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.ServiceBus.Core;
 using SbManager.Extensions;
+using BrokeredMessage = Microsoft.Azure.ServiceBus.Message;
 
 namespace SbManager.BusHelpers
 {
     public interface IRequeueAndRemove
     {
-        void RequeueAll(string queuePath);
-        void RequeueAll(string topicPath, string subscriptionName);
-        void RequeueOne(string queuePath, string messageId, string newBody);
-        void RequeueOne(string topicPath, string subscriptionName, string messageId, string newBody);
+        Task RequeueAll(string path);
+        Task RequeueAll(string topicPath, string subscriptionName);
+        Task RequeueOne(string path, string messageId, string newBody);
+        Task RequeueOne(string topicPath, string subscriptionName, string messageId, string newBody);
 
-        void RemoveAll(string queuePath);
-        void RemoveAll(string topicPath, string subscriptionName);
-        void RemoveOne(string queuePath, string messageId);
-        void RemoveOne(string topicPath, string subscriptionName, string messageId);
+        Task RemoveAll(string path);
+        Task RemoveAll(string topicPath, string subscriptionName);
+        Task RemoveOne(string path, string messageId);
+        Task RemoveOne(string topicPath, string subscriptionName, string messageId);
 
-        void Kill(string queuePath, string messageId);
-        void Kill(string topicPath, string subscriptionName, string messageId);
-        void KillAll(string queuePath);
-        void KillAll(string topicPath, string subscriptionName);
+        Task KillAll(string path);
+        Task KillAll(string topicPath, string subscriptionName);
+        Task KillOne(string path, string messageId);
+        Task KillOne(string topicPath, string subscriptionName, string messageId);
     }
     public class RequeueAndRemove : IRequeueAndRemove
     {
         private readonly MessagingFactory _messagingFactory;
-        private readonly NamespaceManager _namespaceManager;
 
-        public RequeueAndRemove(MessagingFactory messagingFactory, NamespaceManager namespaceManager)
+        public RequeueAndRemove(MessagingFactory messagingFactory)
         {
             _messagingFactory = messagingFactory;
-            _namespaceManager = namespaceManager;
         }
 
-        public void RequeueAll(string queuePath)
+        public async Task RequeueAll(string path)
         {
-            var client = _messagingFactory.CreateQueueClient(queuePath.MakeDeadLetterPath());
-            var queue = _namespaceManager.GetQueue(queuePath);
-            var count = queue.MessageCountDetails.DeadLetterMessageCount;
-            var sender = client.MessagingFactory.CreateMessageSender(queuePath);
+            var receiver = _messagingFactory.CreateMessageReceiver(EntityNameHelper.FormatDeadLetterPath(path));
+            var sender = _messagingFactory.CreateMessageSender(path);
 
-            for (var i = 0; i < count; i++)
+            // TODO: parallelize this loop?
+            Message msg;
+            while ((msg = await receiver.ReceiveAsync(TimeSpan.FromSeconds(5))) != null)
             {
-                var msg = client.Receive(new TimeSpan(0, 0, 5));
-                if (msg == null) break;
                 var clone = Clone(msg);
                 clone.RemoveProperties(GetPropertiesToRemove());
 
-                if (clone.Properties.ContainsKey("RequeuedFrom")) clone.Properties["RequeuedFrom"] = clone.Properties["RequeuedFrom"] += "," + msg.MessageId;
-                else clone.Properties.Add("RequeuedFrom", msg.MessageId);
+                if (clone.UserProperties.ContainsKey("RequeuedFrom")) clone.UserProperties["RequeuedFrom"] = clone.UserProperties["RequeuedFrom"] += "," + msg.MessageId;
+                else clone.UserProperties.Add("RequeuedFrom", msg.MessageId);
 
-                sender.Send(clone);
-                msg.Complete();
+                await sender.SendAsync(clone);
+                await receiver.CompleteAsync(msg.SystemProperties.LockToken);
             }
         }
 
-        public void RequeueAll(string topicPath, string subscriptionName)
+        public Task RequeueAll(string topicPath, string subscriptionName)
         {
-            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName.MakeDeadLetterPath());
-            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName);
-            var count = sub.MessageCountDetails.DeadLetterMessageCount;
-            var sender = client.MessagingFactory.CreateMessageSender(client.TopicPath);
-
-            for (var i = 0; i < count; i++)
-            {
-                var msg = client.Receive(new TimeSpan(0, 0, 5));
-                if (msg == null) break;
-                var clone = Clone(msg);
-                clone.RemoveProperties(GetPropertiesToRemove());
-
-                if (clone.Properties.ContainsKey("RequeuedFrom")) clone.Properties["RequeuedFrom"] = clone.Properties["RequeuedFrom"] += "," + msg.MessageId;
-                else clone.Properties.Add("RequeuedFrom", msg.MessageId);
-
-                sender.Send(clone);
-                msg.Complete();
-            }
+            return RequeueAll(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName));
         }
 
-        public void RequeueOne(string queuePath, string messageId, string newBody)
+        public async Task RequeueOne(string path, string messageId, string newBody)
         {
-            var client = _messagingFactory.CreateQueueClient(queuePath);
-            var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = GetQueueMessageCount(queuePath, queue);
-            var sender = _messagingFactory.CreateMessageSender(queuePath.RemoveDeadLetterPath());
+            var receiver = _messagingFactory.CreateMessageReceiver(path.RemoveDeadLetterPath());
+            var sender = _messagingFactory.CreateMessageSender(path.RemoveDeadLetterPath());
 
-            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
-            foreach (var msg in msgs)
+            // TODO: parallelize this loop
+            Message msg;
+            while ((msg = await receiver.ReceiveAsync(TimeSpan.FromSeconds(5))) != null)
             {
                 if (msg.MessageId != messageId)
                 {
-                    msg.Abandon();
+                    await receiver.AbandonAsync(msg.SystemProperties.LockToken);
                     continue;
                 }
                 var clone = Clone(msg, newBody);
                 clone.RemoveProperties(GetPropertiesToRemove());
 
-                if (clone.Properties.ContainsKey("RequeuedFrom")) clone.Properties["RequeuedFrom"] = clone.Properties["RequeuedFrom"] += "," + msg.MessageId;
-                else clone.Properties.Add("RequeuedFrom", msg.MessageId);
+                if (clone.UserProperties.ContainsKey("RequeuedFrom")) clone.UserProperties["RequeuedFrom"] = clone.UserProperties["RequeuedFrom"] += "," + msg.MessageId;
+                else clone.UserProperties.Add("RequeuedFrom", msg.MessageId);
 
-                msg.Complete();
-                sender.Send(clone);
+                await receiver.CompleteAsync(msg.SystemProperties.LockToken);
+                await sender.SendAsync(clone);
             }
         }
 
-        public void RequeueOne(string topicPath, string subscriptionName, string messageId, string newBody)
+        public Task RequeueOne(string topicPath, string subscriptionName, string messageId, string newBody)
         {
-            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
-            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = GetSubscriptionMessageCount(subscriptionName, sub);
-            var sender = client.MessagingFactory.CreateMessageSender(client.TopicPath);
-
-            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
-            foreach (var msg in msgs)
-            {
-                if (msg.MessageId != messageId)
-                {
-                    msg.Abandon();
-                    continue;
-                }
-                var clone = Clone(msg, newBody);
-                clone.RemoveProperties(GetPropertiesToRemove());
-
-                if (clone.Properties.ContainsKey("RequeuedFrom")) clone.Properties["RequeuedFrom"] = clone.Properties["RequeuedFrom"] += "," + msg.MessageId;
-                else clone.Properties.Add("RequeuedFrom", msg.MessageId);
-
-                sender.Send(clone);
-                msg.Complete();
-            }
+            return RequeueOne(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName), messageId, newBody);
         }
 
-        public void RemoveAll(string queuePath)
+        public Task RemoveAll(string path)
         {
-            var client = _messagingFactory.CreateQueueClient(queuePath);
-            var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = GetQueueMessageCount(queuePath, queue);
-
-            for (var i = 0; i < count; i++)
-            {
-                var msg = client.Receive(new TimeSpan(0, 0, 5));
-                if (msg == null) break;
-                msg.Complete();
-            }
+            return PerformAll(path, async (receiver, lockToken) => await receiver.CompleteAsync(lockToken));
         }
 
-        public void RemoveAll(string topicPath, string subscriptionName)
+        public Task RemoveAll(string topicPath, string subscriptionName)
         {
-            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
-            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = GetSubscriptionMessageCount(subscriptionName, sub);
-
-            for (var i = 0; i < count; i++)
-            {
-                var msg = client.Receive(new TimeSpan(0, 0, 5));
-                if (msg == null) break;
-                msg.Complete();
-            }
+            return RemoveAll(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName));
         }
 
-        public void RemoveOne(string queuePath, string messageId)
+        public Task RemoveOne(string path, string messageId)
         {
-            var client = _messagingFactory.CreateQueueClient(queuePath);
-            var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = GetQueueMessageCount(queuePath, queue);
-
-            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
-            foreach (var msg in msgs)
-            {
-                if (msg.MessageId != messageId)
-                {
-                    msg.Abandon();
-                    continue;
-                }
-                msg.Complete();
-            }
+            return PerformOne(path, messageId, async (receiver, lockToken) => await receiver.CompleteAsync(lockToken));
         }
 
-        public void RemoveOne(string topicPath, string subscriptionName, string messageId)
+        public Task RemoveOne(string topicPath, string subscriptionName, string messageId)
         {
-            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
-            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = GetSubscriptionMessageCount(subscriptionName, sub);
-
-            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
-            foreach (var msg in msgs)
-            {
-                if (msg.MessageId != messageId)
-                {
-                    msg.Abandon();
-                    continue;
-                }
-                msg.Complete();
-            }
+            return RemoveOne(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName), messageId);
         }
 
-        public void Kill(string queuePath, string messageId)
+        public Task KillAll(string path)
         {
-            var client = _messagingFactory.CreateQueueClient(queuePath);
-            var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = GetQueueMessageCount(queuePath, queue);
-
-            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
-            foreach (var msg in msgs)
-            {
-                if (msg.MessageId != messageId)
-                {
-                    msg.Abandon();
-                    continue;
-                }
-                msg.DeadLetter();
-                return;
-            }
+            return PerformAll(path, async (receiver, lockToken) => await receiver.DeadLetterAsync(lockToken));
         }
 
-        public void Kill(string topicPath, string subscriptionName, string messageId)
+        public Task KillAll(string topicPath, string subscriptionName)
         {
-            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
-            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = GetSubscriptionMessageCount(subscriptionName, sub);
-
-            var msgs = client.ReceiveBatch(Convert.ToInt32(count));
-            foreach (var msg in msgs)
-            {
-                if (msg.MessageId != messageId)
-                {
-                    msg.Abandon();
-                    continue;
-                }
-                msg.DeadLetter();
-                return;
-            }
+            return KillAll(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName));
+        }
+        
+        public Task KillOne(string path, string messageId)
+        {
+            return PerformOne(path, messageId, async (receiver, lockToken) => await receiver.DeadLetterAsync(lockToken));
         }
 
-        public void KillAll(string queuePath)
+        public Task KillOne(string topicPath, string subscriptionName, string messageId)
         {
-            var client = _messagingFactory.CreateQueueClient(queuePath);
-            var queue = _namespaceManager.GetQueue(queuePath.RemoveDeadLetterPath());
-            var count = GetQueueMessageCount(queuePath, queue);
-
-
-            for (var i = 0; i < count; i++)
-            {
-                var msg = client.Receive(new TimeSpan(0, 0, 5));
-                if (msg == null) break;
-                msg.DeadLetter();
-            }
-        }
-
-        public void KillAll(string topicPath, string subscriptionName)
-        {
-            var client = _messagingFactory.CreateSubscriptionClient(topicPath, subscriptionName);
-            var sub = _namespaceManager.GetSubscription(topicPath, subscriptionName.RemoveDeadLetterPath());
-            var count = GetSubscriptionMessageCount(subscriptionName, sub);
-
-            for (var i = 0; i < count; i++)
-            {
-                var msg = client.Receive(new TimeSpan(0, 0, 5));
-                if (msg == null) break;
-                msg.DeadLetter();
-            }
+            return KillOne(EntityNameHelper.FormatSubscriptionPath(topicPath, subscriptionName), messageId);
         }
 
         public virtual string[] GetPropertiesToRemove()
@@ -267,11 +134,40 @@ namespace SbManager.BusHelpers
             return new []{"ExceptionType", "ExceptionMessage", "ExceptionStackTrace", "ExceptionTimestamp", "ExceptionMachineName", "ExceptionIdentityName", "DeadLetterReason", "DeadLetterErrorDescription"};
         }
 
+        private async Task PerformAll(string path, Func<MessageReceiver, string, Task> action)
+        {
+            var receiver = _messagingFactory.CreateMessageReceiver(path);
+            
+            // TODO: parallelize this loop?
+            Message msg;
+            while ((msg = await receiver.ReceiveAsync(TimeSpan.FromSeconds(5))) != null)
+            {
+                await action(receiver, msg.SystemProperties.LockToken);
+            }
+        }
+
+        private async Task PerformOne(string path, string messageId, Func<MessageReceiver, string, Task> action)
+        {
+            var receiver = _messagingFactory.CreateMessageReceiver(path);
+            
+            // TODO: parallelize this loop?
+            Message msg;
+            while ((msg = await receiver.ReceiveAsync(TimeSpan.FromSeconds(5))) != null)
+            {
+                if (msg.MessageId != messageId)
+                {
+                    await receiver.AbandonAsync(msg.SystemProperties.LockToken);
+                    continue;
+                }
+                await action(receiver, msg.SystemProperties.LockToken);
+            }
+        }
+        
         private BrokeredMessage Clone(BrokeredMessage msg, string newBody = null)
         {
             if (string.IsNullOrWhiteSpace(newBody)) return msg.Clone();
 
-            var cloned = new BrokeredMessage(new MemoryStream(Encoding.UTF8.GetBytes(newBody)), true)
+            var cloned = new BrokeredMessage(Encoding.UTF8.GetBytes(newBody))
             {
                 Label = msg.Label,
                 ContentType = msg.ContentType,
@@ -285,21 +181,11 @@ namespace SbManager.BusHelpers
                 ScheduledEnqueueTimeUtc = msg.ScheduledEnqueueTimeUtc,
             };
 
-            foreach (var property in msg.Properties)
+            foreach (var property in msg.UserProperties)
             {
-                cloned.Properties.Add(property.Key, property.Value);
+                cloned.UserProperties.Add(property.Key, property.Value);
             }
             return cloned;
-        }
-
-        private static long GetQueueMessageCount(string queuePath, QueueDescription queue)
-        {
-            return queuePath.IsDeadLetterPath() ? queue.MessageCountDetails.DeadLetterMessageCount : (queue.MessageCountDetails.ActiveMessageCount + queue.MessageCountDetails.ScheduledMessageCount);
-        }
-
-        private static long GetSubscriptionMessageCount(string subscriptionName, SubscriptionDescription sub)
-        {
-            return subscriptionName.IsDeadLetterPath() ? sub.MessageCountDetails.DeadLetterMessageCount : (sub.MessageCountDetails.ActiveMessageCount + sub.MessageCountDetails.ScheduledMessageCount);
         }
     }
 }

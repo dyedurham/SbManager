@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 
 namespace SbManager.CQRS.Commands
@@ -12,7 +13,7 @@ namespace SbManager.CQRS.Commands
             _lifetimeScope = lifetimeScope;
         }
 
-        public void Send<TCommand>(TCommand command)
+        public async Task Send<TCommand>(TCommand command)
             where TCommand : class, ICommand
         {
             if (command == null) throw new NullReferenceException("command");
@@ -21,10 +22,10 @@ namespace SbManager.CQRS.Commands
 
             if (handler == null) throw new InvalidOperationException("Could not resolve command handler for command type " + command.GetType().FullName);
 
-            handler.Execute(command);
+            await handler.Execute(command);
         }
 
-        public TResult SendWithResult<TCommand, TResult>(TCommand command)
+        public Task<TResult> SendWithResult<TCommand, TResult>(TCommand command)
             where TCommand : class,  ICommand
         {
             if (command == null) throw new NullReferenceException("command");

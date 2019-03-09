@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using SbManager.BusHelpers;
@@ -24,7 +25,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverview(false))
-                .When(x => x.WhenBuildingModel("testqueue", false))
+                .When(x => x.WhenBuildingModel("testqueue"))
                 .Then(x => x.ThenTheQueueIsReturned())
                 .Then(x => x.ThenThereShouldBeNoException())
                 .BDDfy();
@@ -35,7 +36,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverview(false))
-                .When(x => x.WhenBuildingModel("testQUeuE", false))
+                .When(x => x.WhenBuildingModel("testQUeuE"))
                 .Then(x => x.ThenTheQueueIsReturned())
                 .Then(x => x.ThenThereShouldBeNoException())
                 .BDDfy();
@@ -46,7 +47,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverview(true))
-                .When(x => x.WhenBuildingModel("testqueue", true))
+                .When(x => x.WhenBuildingModel("testqueue"))
                 .Then(x => x.ThenTheQueueIsReturned())
                 .Then(x => x.ThenThereShouldBeNoException())
                 .BDDfy();
@@ -57,7 +58,7 @@ namespace SbManager.Tests.Models.ViewModelBuilders
         {
             this.Given(x => x.GivenABuilder())
                 .And(x => x.GivenThatTheBusMonitorReturnsAnOverviewWithDuplicateQueues())
-                .When(x => x.WhenBuildingModel("testqueue", true))
+                .When(x => x.WhenBuildingModel("testqueue"))
                 .Then(x => x.ThenThereShouldBeAnException())
                 .BDDfy();
         }
@@ -89,11 +90,11 @@ namespace SbManager.Tests.Models.ViewModelBuilders
             _busMonitor.GetOverview().Returns(overview);
         }
 
-        void WhenBuildingModel(string queuename, bool forceFresh)
+        async Task WhenBuildingModel(string queuename)
         {
             try
             {
-                _result = _builder.Build(new QueueCriteria(queuename, forceFresh));
+                _result = await _builder.Build(new QueueCriteria(queuename));
             }
             catch (Exception ex)
             {

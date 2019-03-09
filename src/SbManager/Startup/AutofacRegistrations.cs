@@ -1,7 +1,6 @@
 ﻿using System;
 using Autofac;
-using Microsoft.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
+using Microsoft.Azure.ServiceBus.Management;
 using Nancy.Bootstrapper;
 using SbManager.BusHelpers;
 using SbManager.CQRS.Commands;
@@ -22,7 +21,6 @@ namespace SbManager.Startup
         {
             //Register components here
             builder.RegisterType<Service>().As<IService>();
-            builder.RegisterType<WindowsService>().As<ServiceControl>();
             builder.RegisterType<OwinStartup>().As<IOwinStartup>();
             builder.RegisterType<NancyBootstrapper>().As<INancyBootstrapper>();
 
@@ -33,7 +31,7 @@ namespace SbManager.Startup
                     .Enrich.FromLogContext()                    //Allow to add context values
                     .Enrich.WithProperty("RuntimeVersion", Environment.Version)
                     .WriteTo.FileSinkDefinedFromConfig()
-                    .WriteTo.LiterateConsole();
+                    .WriteTo.Console();
 
             Log.Logger = loggerConfiguration.CreateLogger();
 
@@ -43,7 +41,7 @@ namespace SbManager.Startup
             builder.RegisterType<BusMonitor>().As<IBusMonitor>().SingleInstance();
             builder.RegisterType<Sender>().As<ISender>().SingleInstance();
 
-            builder.Register(c => NamespaceManager.CreateFromConnectionString(c.Resolve<IConfig>().BusConnectionString)).As<NamespaceManager>();
+            builder.Register(c => new ManagementClient(c.Resolve<IConfig>().BusConnectionString)).As<ManagementClient>();
             builder.Register(c => MessagingFactory.CreateFromConnectionString(c.Resolve<IConfig>().BusConnectionString)).As<MessagingFactory>();
 
             builder.RegisterType<BusManagerModule>().AsSelf().AsImplementedInterfaces();

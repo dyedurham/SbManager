@@ -1,4 +1,5 @@
-﻿using Microsoft.ServiceBus;
+﻿using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus.Management;
 using SbManager.CQRS.Commands;
 
 namespace SbManager.InternalCommandHandlers
@@ -14,16 +15,16 @@ namespace SbManager.InternalCommandHandlers
 
     public class DeleteTopicCommandHandler : CQRS.Commands.ICommandHandler<DeleteTopicCommand>
     {
-        private readonly NamespaceManager _namespaceManager;
+        private readonly ManagementClient _managementClient;
 
-        public DeleteTopicCommandHandler(NamespaceManager namespaceManager)
+        public DeleteTopicCommandHandler(ManagementClient managementClient)
         {
-            _namespaceManager = namespaceManager;
+            _managementClient = managementClient;
         }
 
-        public void Execute(DeleteTopicCommand command)
+        public async Task Execute(DeleteTopicCommand command)
         {
-            _namespaceManager.DeleteTopic(command.Path);
+            await _managementClient.DeleteTopicAsync(command.Path);
         }
     }
 }

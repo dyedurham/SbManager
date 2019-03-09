@@ -1,32 +1,21 @@
-﻿using System;
-using System.IO;
-using Microsoft.ServiceBus.Messaging;
+﻿using System.Text;
+using Microsoft.Azure.ServiceBus;
 
 namespace SbManager.Extensions
 {
     public static class BrokeredMessageExtensions
     {
-        public static void RemoveProperties(this BrokeredMessage message, params string[] propertynames)
+        public static void RemoveProperties(this Message message, params string[] propertynames)
         {
             foreach (var propertyname in propertynames)
             {
-                if (message.Properties.ContainsKey(propertyname)) message.Properties.Remove(propertyname);
+                if (message.UserProperties.ContainsKey(propertyname)) message.UserProperties.Remove(propertyname);
             }
         }
 
-        public static string GetBodyString(this BrokeredMessage message)
+        public static string GetBodyString(this Message message)
         {
-            try
-            {
-                var stream = message.GetBody<Stream>();
-                if (stream == null) return null;
-                return new StreamReader(stream).ReadToEnd();
-            }
-            catch (InvalidOperationException lockException)
-            {
-                if (!lockException.Message.Contains("Operation is not valid due to the current state of the object")) throw;
-                return null;
-            }
+            return message.Body != null ? Encoding.UTF8.GetString(message.Body) : null;
         }
     }
 }

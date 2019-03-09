@@ -21,12 +21,12 @@ namespace SbManager
                 // Pass the Autofac container to Topshelf
                 hostConfig.UseAutofacContainer(Service.AppContainer);
 
-                hostConfig.Service<ServiceControl>(serviceConfig =>
+                hostConfig.Service<IService>(serviceConfig =>
                 {
                     // Let Topshelf use the Autofac Container
                     serviceConfig.ConstructUsingAutofacContainer();
-                    serviceConfig.WhenStarted((service, control) => service.Start(control));
-                    serviceConfig.WhenStopped((service, control) => service.Stop(control));
+                    serviceConfig.WhenStarted(service => service.Start());
+                    serviceConfig.WhenStopped(service => service.Stop());
                 });
 
                 hostConfig.SetDescription(Constants.AppDescription);

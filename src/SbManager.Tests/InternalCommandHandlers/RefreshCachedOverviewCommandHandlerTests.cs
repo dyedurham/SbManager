@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using SbManager.BusHelpers;
@@ -44,9 +45,9 @@ namespace SbManager.Tests.InternalCommandHandlers
             _busMonitor.GetOverview().Returns(_expected);
         }
 
-        void WhenExecutingCommand()
+        async Task WhenExecutingCommand()
         {
-            _handler.Execute(_command);
+            await _handler.Execute(_command);
         }
 
         void ThenTheBusMonitorIsCalledWithForceFlag()
